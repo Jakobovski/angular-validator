@@ -50,12 +50,22 @@ angular.module('angularValidator').directive('angularValidator',
 							// We are watching both the value of the element, the value of form.submitted, the validity of the element and the $dirty property of the element
 							// We need to watch $dirty becuase angular will somtimes run $dirty checking after the watch functions have fired the first time.
 							// Adding the four items together is a bit of a trick
-							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + scopeForm[elementToWatch.name].$dirty;
+							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]); 
 						},
 						function() {
 							updateValidationMessage(elementToWatch);
 							updateValidationClass(elementToWatch);
 						});
+				}
+
+
+				// Returns the $dirty value of the element if it exists
+				function getDirtyValue(element) {
+					if (element) {
+						if ("$dirty" in element) {
+							return element.$dirty;
+						}
+					}
 				}
 
 
@@ -150,7 +160,7 @@ angular.module('angularValidator').directive('angularValidator',
 						return;
 					}
 					var formField = scopeForm[element.name];
-					
+
 					// Only add/remove validation classes if the field is $dirty or the form has been submitted
 					if (formField.$dirty || scope[element.form.name].submitted) {
 						if (formField.$valid) {
@@ -168,7 +178,7 @@ angular.module('angularValidator').directive('angularValidator',
 						}
 					}
 				}
-				
+
 			}
 		};
 	}
