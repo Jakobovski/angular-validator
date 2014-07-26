@@ -26,7 +26,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 [Check out the demo!](http://plnkr.co/edit/WwIW5GtHokTiwpe689S3?p=preview)
 
 
-### Installation
+## Installation
 *  Using bower and running `bower install angular-validator`
 *  Using npm and running `npm install angular-validator`
 
