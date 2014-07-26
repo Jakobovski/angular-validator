@@ -1,11 +1,11 @@
 {
-  "name": "angular-validator",
+  "name": "tg-angular-validator",
   "version": "1.0.0",
   "authors": [
     "Zohar Jackson <zohar@turinggroup.com>"
   ],
   "main": "./dist/angular-validator.js",
-  "description": "A dead simple, lightweight validation directive that just works.",
+  "description": "An easy to use, powerful and lightweight AngularJS validation directive.",
   "keywords": [
     "AngularJS", "validation", "angular validation", "form validation", "angular", "validator", "client-side"
   ],

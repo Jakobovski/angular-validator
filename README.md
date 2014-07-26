@@ -27,9 +27,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 
 
 ## Installation
-*  Using bower and running `bower install angular-validator`
-*  Using npm and running `npm install angular-validator`
-
+*  Using bower:  `bower install tg-angular-validator`
 
 ## Usage
 
