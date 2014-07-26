@@ -14,11 +14,19 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "tests"
+    "test",
+    "src",
+    "demo",
+    "bower.json",
+    "gruntfile.js",
+    "package.json",
+    "README.md",
+    "karma.conf.js"
   ],
   "dependencies": {
     "angular": "~1.2.19",
     "bootstrap": "~3.2.0",
     "font-awesome": "~4.0.3"
-  }
+  },
+  "homepage": "https://github.com/turinggroup/angular-validator"
 }
