@@ -1,0 +1,28 @@
+{
+  "name": "angular-validator",
+  "version": "1.0.0",
+  "description": "A dead simple, lightweight validation directive that just works.  ",
+  "main": "/dist/angular-validator.min.js",
+  "keywords": [
+    "AngularJS", "validation", "angular validation", "form validation", "angular", "validator", "client-side"
+  ],
+  "scripts": {
+    "test": "grunt test --verbose"
+  },
+  "author": "Zohar Jackson",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-cli": ">= 0.1.7",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-browser-sync": "~0.9.1",
+    "grunt-karma": "latest",
+    "karma": "~0.12.1",
+    "karma-jasmine": "~0.1.5",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-phantomjs-launcher": "~0.1.2",
+    "karma-firefox-launcher": "~0.1.3"
+  }
+}

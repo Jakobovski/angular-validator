@@ -1,0 +1,105 @@
+<html ng-app="angular-validator-demo">
+<head>
+    <title>Angular-Validator Demo</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"></head>
+
+<body ng-controller="DemoCtrl">
+    <div class="container">
+        <h1>Angular-Validator Demo</h1>
+        <a href="https://github.com/turinggroup/angular-validator">https://github.com/turinggroup/angular-validator</a>
+        <hr>
+
+        <form angular-validator-submit="submitMyForm()" name="myForm" class="form-horizontal" novalidate angular-validator>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Custom validation Function</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                            name = "firstName"
+                            class = "form-control"
+                            ng-model = "form.firstName"
+                            validator = "myCustomValidator(form.firstName)"
+                            required></div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                    <input  type = "email"
+                            name = "emailAddress"
+                            class = "form-control"
+                            ng-model = "form.emailAddress"
+                            invalid-message="'Thats not a real email address'"
+                            required-message="'Yo this is required'"
+                            required></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Regex</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                            name = "regex"
+                            class = "form-control"
+                            ng-model = "form.regex"
+                            ng-pattern="/regex/"
+                            invalid-message="'You must enter the word `regex`'"
+                            required-message="'Yo! This field is required..'"
+                            required></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Custom message Function</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                            name = "myField"
+                            class = "form-control"
+                            ng-model = "form.myField"
+                            validator = "anotherCustomValidator(form.myField) === true"
+                            invalid-message = "anotherCustomValidator(form.myField)"
+                            required></div>
+            </div>
+
+            <hr>
+            <p>Password validation and password matching example</p>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                    <input  type = "password"
+                            name = "password"
+                            class = "form-control"
+                            ng-model = "form.password"
+                            validator = "passwordValidator(form.password) === true"
+                            invalid-message = "passwordValidator(form.password)"
+                            required></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Confirm Password</label>
+                <div class="col-sm-10">
+                    <input  type = "password"
+                            name = "confirmPassword"
+                            class = "form-control"
+                            ng-model = "form.confirmPassword"
+                            validator = "form.password === form.confirmPassword"
+                            invalid-message = "'Passwords do not match!'"
+                            required></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+
+        <hr>
+        <h3> <u>Scope Sneak Peak</u>
+        </h3>
+        <p>Form valid: {{myForm.$valid}}</p>
+        <p>First Name valid: {{myForm.firstName.$valid}}</p>
+        <p>Email Valid: {{myForm.emailAddress.$valid}}</p>
+        <p>Regex Valid: {{myForm.regex.$valid}}</p>
+        <p>Form submitted: {{myForm.submitted}}</p>
+
+    </div>
+    <script src="//localhost:35729/livereload.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="app.js"></script>
+    <script src="../dist/angular-validator.js"></script>
+</body>
+</html>
