@@ -27,7 +27,11 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 
 
 ## Installation
-*  Using bower:  `bower install tg-angular-validator`
+1. Using bower:  `bower install tg-angular-validator`
+2. Include `angular-validator.min.js` into your application's HTML
+3. Add `angularValidator` as a dependancy of your Angular module
+
+
 
 ## Usage
 
@@ -35,7 +39,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
+        ng-model = "person.firstName"
         required>
 ```
 
@@ -44,7 +48,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
+        ng-model = "person.firstName"
         validator = "myCustomValidationFunction(form.firstName)">
 ```
 
@@ -53,7 +57,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
+        ng-model = "person.firstName"
         validator = "form.firstname === 'john'">
 ```
 
@@ -62,7 +66,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
+        ng-model = "person.firstName"
         ng-pattern = "\regex\"
         required>
 ```
@@ -71,7 +75,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
+        ng-model = "person.firstName"
         ng-pattern = "\regex\"
         invalid-message = "'Please enter the word regex'"
         required-message = "'First name is required'"
@@ -83,10 +87,10 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 ```
 <input  type = "text"
         name = "firstName"
-        ng-model = "form.firstName"
-        validator= "myCustomValidationFunction(form.firstName) === true"
-        invalid-message = "myCustomValidationMe(form.firstName)"
-        required-message = "myCustomValidationFunction(form.firstName)"
+        ng-model = "person.firstName"
+        validator= "myCustomValidationFunction(person.firstName) === true"
+        invalid-message = "myCustomValidationMe(person.firstName)"
+        required-message = "myCustomValidationFunction(person.firstName)"
         required>
 ```
 * Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.  
@@ -120,7 +124,7 @@ myElement.$angularValidator
 
 ## FAQ
 **It's not working!?**
-Make sure you have assigned a unique name attribute to each element
+Make sure you have assigned a unique name attribute to each element. Make sure you have properly followed the installation instructions.
 
 **Why pass value to custom validator functions?**
 Passing the value to the custom validator function allows the function to be easier to test.
