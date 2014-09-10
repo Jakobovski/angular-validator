@@ -50,7 +50,7 @@ angular.module('angularValidator').directive('angularValidator',
 							// We are watching both the value of the element, the value of form.submitted, the validity of the element and the $dirty property of the element
 							// We need to watch $dirty becuase angular will somtimes run $dirty checking after the watch functions have fired the first time.
 							// Adding the four items together is a bit of a trick
-							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]); 
+              return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getModelValue(scopeForm[elementToWatch.name]);
 						},
 						function() {
 							updateValidationMessage(elementToWatch);
@@ -68,7 +68,13 @@ angular.module('angularValidator').directive('angularValidator',
 					}
 				}
 
-
+        function getModelValue(element) {
+          if (element) {
+            if ("$modelValue" in element) {
+              return element.$modelValue;
+            }
+          }
+        }
 
 				function checkElementValididty(element) {
 					// If element has a custom validation function
@@ -110,25 +116,25 @@ angular.module('angularValidator').directive('angularValidator',
           // Only add validation messages if the form field is $dirty or the form has been submitted
 					if (scopeElementModel.$dirty || scope[element.form.name].submitted) {
 
-						if (scopeElementModel.$error.required) {
-							// If there is a custom required message display it
-							if ("required-message" in element.attributes) {
-								angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
-							}
-							// Display the default require message
-							else {
-								angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
-							}
-						} else if (!scopeElementModel.$valid) {
-							// If there is a custom validation message add it
-							if ("invalid-message" in element.attributes) {
-								angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
-							}
-							// Display the default error message
-							else {
-								angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
-							}
-						}
+            if (scopeElementModel.$error.required) {
+              // If there is a custom required message display it
+              if ("required-message" in element.attributes) {
+                appendErrorMessage(element, element.attributes['required-message'].value);
+              }
+              // Display the default require message
+              else {
+                appendErrorMessage(element, defaultRequiredMessage);
+              }
+            } else if (!scopeElementModel.$valid) {
+              // If there is a custom validation message add it
+              if ("invalid-message" in element.attributes) {
+                appendErrorMessage(element, element.attributes['invalid-message'].value);
+              }
+              // Display the default error message
+              else {
+                appendErrorMessage(element, defaultInvalidMessage);
+              }
+            }
 					}
 				}
 
@@ -137,8 +143,24 @@ angular.module('angularValidator').directive('angularValidator',
 					return "<label class='control-label has-error validationMessage'>" + scope.$eval(messageText) + "</label>";
 				}
 
+        function appendErrorMessage(element, messageText) {
+          if ("append-to" in element.attributes) {
+            var appendTo = element.attributes['append-to'].value;
+            if (appendTo === 'parent') {
+              angular.element(element).parent().append(generateErrorMessage(messageText));
+            }
+            else {
+              // fallback to default
+              angular.element(element).after(generateErrorMessage(messageText));
+            }
+          }
+          else {
+            // default append after element
+            angular.element(element).after(generateErrorMessage(messageText));
+          }
+        }
 
-				// Returns the validation message element or False
+        // Returns the validation message element or False
 				function isValidationMessagePresent(element) {
 					var elementSiblings = angular.element(element).parent().children();
 					for (var i = 0; i < elementSiblings.length; i++) {
