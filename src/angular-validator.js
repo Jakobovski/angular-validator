@@ -68,7 +68,7 @@ angular.module('angularValidator')
 
         // Setup $watch on a single formfield
         function setupWatch(elementToWatch) {
-          scope.$watch(function () {
+          watchers.push(scope.$watch(function () {
               // We are watching both the value of the element, the value of form.submitted, the validity of the element and the $dirty property of the element
               // We need to watch $dirty becuase angular will somtimes run $dirty checking after the watch functions have fired the first time.
               // Adding the four items together is a bit of a trick
@@ -77,7 +77,8 @@ angular.module('angularValidator')
             function () {
               updateValidationMessage(elementToWatch);
               updateValidationClass(elementToWatch);
-            });
+            })
+          );
         }
 
         // Returns the $dirty value of the element if it exists
@@ -204,6 +205,9 @@ angular.module('angularValidator')
           // Always remove validation classes
           angular.element(element.parentNode).removeClass('has-error');
 
+          // remove validation class from 'from-group' element
+          angular.element(element).closest('.form-group').removeClass('has-error');
+
           // This is extra for users wishing to implement the .has-error class on the field itself
           // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
           angular.element(element).removeClass('has-error');
@@ -212,6 +216,9 @@ angular.module('angularValidator')
           if (formField.$dirty || scope[element.form.name].submitted) {
             if (formField.$invalid) {
               angular.element(element.parentNode).addClass('has-error');
+
+              // add validation class for element with 'form-group' class
+              angular.element(element).closest('.form-group').addClass('has-error');
 
               // This is extra for users wishing to implement the .has-error class on the field itself
               // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
