@@ -17,7 +17,10 @@ module.exports = function(grunt) {
                 "separator": ";"
             },
             "build": {
-                "src": "src/*.js",
+                "src": [
+                  "src/angular-validator.js",
+                  "src/angular-validator-provider.js"
+                ],
                 "dest": "dist/angular-validator.js"
             }
         },

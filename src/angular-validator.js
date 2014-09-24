@@ -33,7 +33,7 @@ angular.module('angularValidator')
 
         var formChangeWatcher = scope.$watch(
           function () {
-            return angular.element(element)[0].length
+            return angular.element(element)[0].length;
           },
           function () {
             destroyWatchers();
