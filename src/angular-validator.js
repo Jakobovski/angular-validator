@@ -194,6 +194,13 @@ angular.module('angularValidator')
         // Adds and removes .has-error class to both the form element and the form element's parent
         // depending on the validity of the element and the submitted state of the form
         function updateValidationClass(element) {
+          var $element = angular.element(element);
+          var validator_group = 'validator-group' in element.attributes && element.attributes['validator-group'].value;
+          var $validator_group = $element.closest('.' + validator_group);
+          var validator_group_elements = 'validator-group-elements' in element.attributes && element.attributes['validator-group-elements'].value;
+          if (validator_group_elements && !validator_group) {
+            throw new Error('You must define "validator-group" which contains "validator-group-elements"');
+          }
 
           // Make sure the element is a form field and not a button for example
           // Only form fields should have names.
@@ -203,30 +210,50 @@ angular.module('angularValidator')
           var formField = scopeForm[element.name];
 
           // Always remove validation classes
-          angular.element(element.parentNode).removeClass('has-error');
-
-          // remove validation class from 'from-group' element
-          angular.element(element).closest('.form-group').removeClass('has-error');
+          $element.parent().removeClass('has-error');
 
           // This is extra for users wishing to implement the .has-error class on the field itself
           // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
-          angular.element(element).removeClass('has-error');
+          $element.removeClass('has-error');
+
+          // remove validation class from 'validator-group' if it defined
+          if ($validator_group.length) {
+            $validator_group.removeClass('has-error');
+          }
 
           // Only add validation classes if the field is $dirty or the form has been submitted
           if (formField.$dirty || scope[element.form.name].submitted) {
             if (formField.$invalid) {
-              angular.element(element.parentNode).addClass('has-error');
-
-              // add validation class for element with 'form-group' class
-              angular.element(element).closest('.form-group').addClass('has-error');
+              $element.parent().addClass('has-error');
 
               // This is extra for users wishing to implement the .has-error class on the field itself
               // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
-              angular.element(element).addClass('has-error');
+              $element.addClass('has-error');
+
+              // add validation class for element with 'validator-group' class if defined
+              if ($validator_group.length) {
+                $validator_group.addClass('has-error');
+              }
+            }
+            else if (validator_group_elements) {
+              var groupElements = $validator_group.find(validator_group_elements);
+              if (!groupElements.length) {
+                throw new Error('Can not find elements by selector="'+validator_group_elements+'" in validator-group="'+validator_group+'" ');
+              }
+              else {
+                angular.forEach(groupElements, function (groupElement) {
+                  var field = scopeForm[groupElement.name];
+                  if (!field) {
+                    throw new Error('Can not find element with name="'+groupElement.name+'" in validator-group="'+validator_group+'" ');
+                  }
+                  if (field.$invalid) {
+                    return $validator_group.addClass('has-error');
+                  }
+                });
+              }
             }
           }
         }
-
       }
     };
   }
