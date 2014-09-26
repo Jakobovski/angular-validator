@@ -164,15 +164,9 @@ angular.module('angularValidator')
         }
 
         function appendErrorMessage(element, messageText) {
-          if ("append-to" in element.attributes) {
-            var appendTo = element.attributes['append-to'].value;
-            if (appendTo === 'parent') {
-              angular.element(element).parent().append(generateErrorMessage(messageText));
-            }
-            else {
-              // fallback to default
-              angular.element(element).after(generateErrorMessage(messageText));
-            }
+          if ('validator-message-append-to' in element.attributes) {
+            var appendTo = element.attributes['validator-message-append-to'].value;
+            angular.element(element).closest(appendTo).append(generateErrorMessage(messageText));
           }
           else {
             // default append after element
@@ -182,7 +176,14 @@ angular.module('angularValidator')
 
         // Returns the validation message element or False
         function isValidationMessagePresent(element) {
-          var elementSiblings = angular.element(element).parent().children();
+          var elementSiblings;
+          if ('validator-message-append-to' in element.attributes) {
+            var appendTo = element.attributes['validator-message-append-to'].value;
+            elementSiblings  = angular.element(element).closest(appendTo).children();
+          }
+          else {
+            elementSiblings = angular.element(element).parent().children();
+          }
           for (var i = 0; i < elementSiblings.length; i++) {
             if (angular.element(elementSiblings[i]).hasClass("validationMessage")) {
               return angular.element(elementSiblings[i]);
