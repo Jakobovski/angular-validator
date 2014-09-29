@@ -134,8 +134,8 @@ angular.module('angularValidator')
             validationMessageElement.remove();
           }
 
-          // Only add validation messages if the form field is $dirty or the form has been submitted
-          if (scopeElementModel.$dirty || scope[element.form.name].submitted) {
+          // Only add validation messages if form has been submitted
+          if (scope[element.form.name].submitted) {
 
             if (scopeElementModel.$error.required) {
               // If there is a custom required message display it
@@ -222,8 +222,8 @@ angular.module('angularValidator')
             $validator_group.removeClass('has-error');
           }
 
-          // Only add validation classes if the field is $dirty or the form has been submitted
-          if (formField.$dirty || scope[element.form.name].submitted) {
+          // Only add validation classes if form has been submitted
+          if (scope[element.form.name].submitted) {
             if (formField.$invalid) {
               $element.parent().addClass('has-error');
 
