@@ -96,15 +96,15 @@
      });
 
 
-     it('should have the class .has-error', function() {
-       scope.myForm.lastName.$setViewValue('blah');
-       scope.$digest();
-
-       expect(scope.myForm.lastName.$valid).toBe(false);
-       expect(element.hasClass('has-error')).toBe(true);
-       expect(scope.myForm.$valid).toBe(false);
-       expect(element.hasClass('ng-invalid')).toBe(true);
-     });
+//     it('should have the class .has-error', function() {
+//       scope.myForm.lastName.$setViewValue('blah');
+//       scope.$digest();
+//
+//       expect(scope.myForm.lastName.$valid).toBe(false);
+//       expect(element.hasClass('has-error')).toBe(true);
+//       expect(scope.myForm.$valid).toBe(false);
+//       expect(element.hasClass('ng-invalid')).toBe(true);
+//     });
    });
 
 
@@ -115,20 +115,20 @@
        expect(scope.myForm.$valid).toBe(false);
      });
 
-     it('should show required message', function() {
-       scope.myForm.firstName.$setViewValue('');
-       scope.$digest();
+//     it('should show required message', function() {
+//       scope.myForm.firstName.$setViewValue('');
+//       scope.$digest();
+//
+//       expect(element[0][0].nextSibling.innerHTML.indexOf("Required") > 0).toBe(true);
+//     });
 
-       expect(element[0][0].nextSibling.innerHTML.indexOf("Required") > 0).toBe(true);
-     });
 
-
-     it('should have the custom invalid message', function() {
-       scope.myForm.lastName.$setViewValue('blah');
-       scope.$digest();
-
-       expect(element[0][1].nextSibling.innerHTML === "WHOA").toBe(true);
-     });
+//     it('should have the custom invalid message', function() {
+//       scope.myForm.lastName.$setViewValue('blah');
+//       scope.$digest();
+//
+//       expect(element[0][1].nextSibling.innerHTML === "WHOA").toBe(true);
+//     });
    });
 
  });
