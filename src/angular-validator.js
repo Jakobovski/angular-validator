@@ -10,7 +10,7 @@ angular.module('angularValidator').directive('angularValidator',
 				var DOMForm = angular.element(element)[0];
 
 				// This is the the scope form model
-				// All validation states are containted here
+				// All validation states are contained here
 				var scopeForm = scope[DOMForm.name];
 
 				// Set the default submitted state to false
@@ -25,9 +25,9 @@ angular.module('angularValidator').directive('angularValidator',
 
 					// If the form is valid then call the function that is declared in the angular-validator-submit atrribute on the form element
 					if (scopeForm.$valid) {
-                                            scope.$apply(function(){
-						scope.$eval(DOMForm.attributes["angular-validator-submit"].value);
-                                            });
+						scope.$apply(function() {
+							scope.$eval(DOMForm.attributes["angular-validator-submit"].value);
+						});
 					}
 				});
 
@@ -40,40 +40,37 @@ angular.module('angularValidator').directive('angularValidator',
 					for (var i = 0; i < formElement.length; i++) {
 						// This ensures we are only watching form fields
 						if (i in formElement) {
-                                                        setupOnBlur(formElement[i]);
 							setupWatch(formElement[i]);
 						}
 					}
 				}
 
-                               var activeElement = null;
-
-                               function setupOnBlur(element){
-                                   angular.element(element).on('focus', function(){
-                                       activeElement = element;
-                                   });
-
-                                   angular.element(element).on('blur', function(){
-                                       updateValidationMessage(element);
-				       updateValidationClass(element);
-                                   });
-                               }
 
 				// Setup $watch on a single formfield
 				function setupWatch(elementToWatch) {
-					scope.$watch(function() {
-							// We are watching both the value of the element, the value of form.submitted, the validity of the element and the $dirty property of the element
-							// We need to watch $dirty becuase angular will somtimes run $dirty checking after the watch functions have fired the first time.
-							// Adding the four items together is a bit of a trick
-							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]); 
-						},
-						function() {
-                                                    // only update the error message when the user finished entering the field
-                                                    // update immediately if the user made the field value valid
-                                                    if((elementToWatch != activeElement) || scopeForm[elementToWatch.name].$valid){
+
+					// If element is set to validate on blur then update the element on blur
+					if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
+						angular.element(elementToWatch).on('blur', function() {
 							updateValidationMessage(elementToWatch);
 							updateValidationClass(elementToWatch);
-                                                    }
+						});
+					}
+
+					scope.$watch(function() {
+							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]);
+						},
+						function() {
+							// if dirty show
+							if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "dirty") {
+								updateValidationMessage(elementToWatch);
+								updateValidationClass(elementToWatch);
+							}
+							// Update the field immediately if the form is submitted or the element is valid 
+							else if (scopeForm.submitted || (scopeForm[elementToWatch.name] && scopeForm[elementToWatch.name].$valid)) {
+								updateValidationMessage(elementToWatch);
+								updateValidationClass(elementToWatch);
+							}
 						});
 				}
 
@@ -172,7 +169,6 @@ angular.module('angularValidator').directive('angularValidator',
 				// Adds and removes .has-error class to both the form element and the form element's parent
 				// depending on the validity of the element and the submitted state of the form
 				function updateValidationClass(element) {
-
 					// Make sure the element is a form field and not a button for example
 					// Only form fields should have names. 
 					if (!(element.name in scopeForm)) {

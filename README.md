@@ -7,31 +7,29 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 
 
 ## Why?
-Despite Angular's awesomeness, validation in Angular is still a pain in the ass. Surprisingly there are no seemless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
+Despite Angular's awesomeness, validation in Angular is still a pain in the ass. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
 
 
 ## Features
 * Validate using REGEX, required, or custom validation functions
-* Show validation errors only after field is `$dirty` or the form is submitted
+* Always validates on submit with option to individual elements validate on `blur` or `dirty` as well.
+* Prevents submission if the form is invalid
 * Adds validation error/success messages as sibling elements
-* Adds `.has-error` classes to invalid fields only after `$dirty` or form is submitted
+* Adds `.has-error` classes to invalid elements
 * Adds `.has-error` classes to validation message
-* Works with Bootstrap out of the box (although Bootstrap is not required)
 * Supports multi-field dependent validation (one field depends on another such as password matching)
 * Works with or without `novalidate`
-* Prevents submission if the form is invalid
+* Works with Bootstrap out of the box (although Bootstrap is not required)
 
 
 ## Demo
-[Check out the demo!](http://plnkr.co/edit/WwIW5GtHokTiwpe689S3?p=preview)
+[Check out the demo!](http://plnkr.co/edit/ceBvMhU5se2mJYWHk3Ne?p=preview)
 
 
 ## Installation
 1. Using bower:  `bower install tg-angular-validator`
 2. Include `angular-validator.min.js` into your application's HTML
 3. Add `angularValidator` as a dependancy of your Angular module
-
-
 
 ## Usage
 
@@ -49,6 +47,24 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
+        validator = "myCustomValidationFunction(form.firstName)">
+```
+
+**Usage with validation on blur**
+```
+<input  type = "text"
+        name = "firstName"
+        ng-model = "person.firstName"
+        validate-on="blur"
+        validator = "myCustomValidationFunction(form.firstName)">
+```
+
+**Usage with validation on dirty**
+```
+<input  type = "text"
+        name = "firstName"
+        ng-model = "person.firstName"
+        validate-on="dirty"
         validator = "myCustomValidationFunction(form.firstName)">
 ```
 
@@ -139,10 +155,11 @@ You are using the wrong library.
 
 
 **What if I want to disable the submit button if the form is invalid?**
-You can use `ng-disabled=myForm.$invalid` on the submit button.
+You can add `ng-disabled="myForm.$invalid"` on the submit button.
 
 
-
+## CONTRIBUTING
+See CONTRIBUTING.md
 
 ## License
 MIT

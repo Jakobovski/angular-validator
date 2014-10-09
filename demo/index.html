@@ -1,7 +1,15 @@
 <html ng-app="angular-validator-demo">
 <head>
     <title>Angular-Validator Demo</title>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"></head>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <style>
+        h4 {
+            color:  rgb(255, 128, 0);
+        }
+    </style>
+
+
+    </head>
 
 <body ng-controller="DemoCtrl">
     <div class="container">
@@ -10,6 +18,48 @@
         <hr>
 
         <form angular-validator-submit="submitMyForm()" name="myForm" class="form-horizontal" novalidate angular-validator>
+            <h4>Choose when to validate:</h4>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On dirty validation</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                        name = "dirty"
+                        validate-on="dirty"
+                        class = "form-control"
+                        ng-model = "form.dirty"
+                        ng-pattern="/regex/"
+                        invalid-message="'You must enter the word `regex`'"
+                        required-message="'Yo! This field is required..'"
+                        required></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On blur validation</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                        name = "blur"
+                        validate-on="blur"
+                        class = "form-control"
+                        ng-model = "form.blur"
+                        ng-pattern="/regex/"
+                        invalid-message="'You must enter the word `regex`'"
+                        required-message="'Yo! This field is required..'"
+                        required></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">On submit validation</label>
+                <div class="col-sm-10">
+                    <input  type = "text"
+                        name = "sub"
+                        class = "form-control"
+                        ng-model = "form.sub"
+                        ng-pattern="/regex/"
+                        invalid-message="'You must enter the word `regex`'"
+                        required-message="'Yo! This field is required..'"
+                        required></div>
+            </div>
+
+            <hr>
+            <h4>Different types of validation:</h4>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Custom validation Function</label>
@@ -55,9 +105,9 @@
                             invalid-message = "anotherCustomValidator(form.myField)"
                             required></div>
             </div>
-
             <hr>
-            <p>Password validation and password matching example</p>
+
+            <h4>Password validation and password matching example</h4>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Password</label>
                 <div class="col-sm-10">
@@ -66,6 +116,7 @@
                             class = "form-control"
                             ng-model = "form.password"
                             validator = "passwordValidator(form.password) === true"
+                            validate-on="dirty"
                             invalid-message = "passwordValidator(form.password)"
                             required></div>
             </div>
@@ -77,9 +128,11 @@
                             class = "form-control"
                             ng-model = "form.confirmPassword"
                             validator = "form.password === form.confirmPassword"
+                            validate-on="dirty"
                             invalid-message = "'Passwords do not match!'"
                             required></div>
             </div>
+            <hr>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -88,8 +141,8 @@
         </form>
 
         <hr>
-        <h3> <u>Scope Sneak Peak</u>
-        </h3>
+        <h4> <u>Scope Sneak Peak</u>
+        </h4>
         <p>Form valid: {{myForm.$valid}}</p>
         <p>First Name valid: {{myForm.firstName.$valid}}</p>
         <p>Email Valid: {{myForm.emailAddress.$valid}}</p>
@@ -100,6 +153,6 @@
     <script src="//localhost:35729/livereload.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
     <script src="app.js"></script>
-    <script src="../dist/angular-validator.js"></script>
+    <script src="../src/angular-validator.js"></script>
 </body>
 </html>

@@ -9,9 +9,10 @@
 
      htmlForm = angular.element(
        '<form name="myForm" angular-validator>' +
-       '<input ng-model="model.firstName" name="firstName" type="text" required/>' +
-       '<input ng-model="model.lastName" name="lastName" ng-pattern="/lastName/" invalid-message="\'WHOA\'" type="text" required/>' +
-       '<input ng-model="model.city" name="city" type="text"  validator= "model.city === \'chicago\'" required/>' +
+       '<input ng-model="model.firstName" validate-on="dirty" name="firstName" type="text" required/>' +
+       '<input ng-model="model.lastName" validate-on="dirty"name="lastName" ng-pattern="/lastName/" invalid-message="\'WHOA\'" type="text" required/>' +
+       '<input ng-model="model.city" name="city" type="text" validate-on="dirty" validator="model.city === \'chicago\'" required/>' +
+       '<input ng-model="model.state" name="state" type="text" required/>' +
        '</form>'
      );
 
@@ -87,6 +88,7 @@
        scope.myForm.firstName.$setViewValue('blah');
        scope.myForm.lastName.$setViewValue('lastName');
        scope.myForm.city.$setViewValue('chicago');
+       scope.myForm.state.$setViewValue('chicago');
 
        scope.$digest();
 
