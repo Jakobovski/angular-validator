@@ -40,11 +40,24 @@ angular.module('angularValidator').directive('angularValidator',
 					for (var i = 0; i < formElement.length; i++) {
 						// This ensures we are only watching form fields
 						if (i in formElement) {
+                                                        setupOnBlur(formElement[i]);
 							setupWatch(formElement[i]);
 						}
 					}
 				}
 
+                               var activeElement = null;
+
+                               function setupOnBlur(element){
+                                   angular.element(element).on('focus', function(){
+                                       activeElement = element;
+                                   });
+
+                                   angular.element(element).on('blur', function(){
+                                       updateValidationMessage(element);
+				       updateValidationClass(element);
+                                   });
+                               }
 
 				// Setup $watch on a single formfield
 				function setupWatch(elementToWatch) {
@@ -55,8 +68,12 @@ angular.module('angularValidator').directive('angularValidator',
 							return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]); 
 						},
 						function() {
+                                                    // only update the error message when the user finished entering the field
+                                                    // update immediately if the user made the field value valid
+                                                    if((elementToWatch != activeElement) || scopeForm[elementToWatch.name].$valid){
 							updateValidationMessage(elementToWatch);
 							updateValidationClass(elementToWatch);
+                                                    }
 						});
 				}
 
