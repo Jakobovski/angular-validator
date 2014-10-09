@@ -12,7 +12,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 
 ## Features
 * Validate using REGEX, required, or custom validation functions
-* Always validates on submit with option to individual elements validate on `blur` or `dirty` as well.
+* Validates elements on submit with option to validate individual elements on `blur` or `dirty` as well.
 * Prevents submission if the form is invalid
 * Adds validation error/success messages as sibling elements
 * Adds `.has-error` classes to invalid elements
