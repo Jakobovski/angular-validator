@@ -72,7 +72,12 @@ angular.module('angularValidator')
               // We are watching both the value of the element, the value of form.submitted, the validity of the element and the $dirty property of the element
               // We need to watch $dirty becuase angular will somtimes run $dirty checking after the watch functions have fired the first time.
               // Adding the four items together is a bit of a trick
-              return elementToWatch.value + scopeForm.submitted + checkElementValidity(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getModelValue(scopeForm[elementToWatch.name]);
+              return elementToWatch.value +
+                     scopeForm.submitted +
+                     checkElementValidity(elementToWatch) +
+                     checkElementRequired(elementToWatch) +
+                     getDirtyValue(scopeForm[elementToWatch.name]) +
+                     getModelValue(scopeForm[elementToWatch.name]);
             },
             function () {
               updateValidationMessage(elementToWatch);
@@ -106,6 +111,13 @@ angular.module('angularValidator')
             var isElementValid = element_scope.$eval(element.attributes.validator.value);
             scopeForm[element.name].$setValidity("angularValidator", isElementValid);
             return isElementValid;
+          }
+        }
+
+        function checkElementRequired(element) {
+          if ("ng-required" in element.attributes) {
+            var element_scope = angular.element(element).scope();
+            return element_scope.$eval(element.attributes["ng-required"].value);
           }
         }
 
