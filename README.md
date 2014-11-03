@@ -26,6 +26,9 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 [Check out the demo!](http://plnkr.co/edit/ceBvMhU5se2mJYWHk3Ne?p=preview)
 
 
+## Feedback
+Need a feature, found a bug? Create an issue. Dont have any issues, love the project? Give it a star! 
+
 ## Installation
 1. Using bower:  `bower install tg-angular-validator`
 2. Include `angular-validator.min.js` into your application's HTML
