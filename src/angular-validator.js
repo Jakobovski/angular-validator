@@ -13,10 +13,16 @@ angular.module('angularValidator').provider('ErrorMessages',
       angular.extend(messages, params);
       return this
     };
-    // public template setter
-    this.template = function(messageText) {
+
+    var template = function(messageText){
       return "<label class='control-label has-error validationMessage'><i class='fa fa-times'></i>" + messageText + "</label>";
     };
+
+    this.setTemplate = function(fn){
+      template = fn;
+      return this
+    };
+    // public template setter
 
     // public api used by directive
     var self = this;
@@ -25,7 +31,7 @@ angular.module('angularValidator').provider('ErrorMessages',
         defaultFor: function(name){
           return messages[name]
         },
-        generateTemplate: self.template
+        generateTemplate: template
       }
     }
   }
@@ -75,7 +81,11 @@ angular.module('angularValidator').directive('angularValidator', ["ErrorMessages
           for (var i = 0; i < formElement.length; i++) {
             // This ensures we are only watching form fields
             if (i in formElement) {
-              setupWatch(formElement[i]);
+              // Make sure the element is a form field and not a button for example
+              // Only form elements should have names.
+              if (formElement[i].name in scopeForm) {
+                setupWatch(formElement[i]);
+              }
             }
           }
         }
@@ -138,19 +148,6 @@ angular.module('angularValidator').directive('angularValidator', ["ErrorMessages
         // Will use default message if a custom message is not given
         function updateValidationMessage(element) {
 
-//          var defaultRequiredMessage = function() {
-//            return "<i class='fa fa-times'></i> Required";
-//          };
-//          var defaultInvalidMessage = function() {
-//            return "<i class='fa fa-times'></i> Invalid";
-//          };
-
-          // Make sure the element is a form field and not a button for example
-          // Only form elements should have names.
-          if (!(element.name in scopeForm)) {
-            return;
-          }
-
           var scopeElementModel = scopeForm[element.name];
 
           // Only add/remove validation messages if the form field is $dirty or the form has been submitted
@@ -162,16 +159,18 @@ angular.module('angularValidator').directive('angularValidator', ["ErrorMessages
               validationMessageElement.remove();
             }
 
-            var errorMessage;
-            for (var errorName in scopeElementModel.$error){
-              if ((errorName + '-message') in element.attributes){
-                errorMessage = scope.$eval(element.attributes[errorName + '-message'].nodeValue)
+            if (!angular.equals({}, scopeElementModel.$error)) {
+              var errorMessage;
+              for (var errorName in scopeElementModel.$error) {
+                if ((errorName + '-message') in element.attributes) {
+                  errorMessage = scope.$eval(element.attributes[errorName + '-message'].nodeValue)
+                }
+                else {
+                  errorMessage = ErrorMessages.defaultFor(errorName) || errorName
+                }
               }
-              else {
-                errorMessage = ErrorMessages.defaultFor(errorName) || errorName
-              }
+              angular.element(element).after(ErrorMessages.generateTemplate(errorMessage));
             }
-            angular.element(element).after(ErrorMessages.generateTemplate(errorMessage));
           }
         }
 
