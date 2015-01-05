@@ -143,7 +143,9 @@ myElement.$angularValidator
 
 ## FAQ
 **It's not working!?**
-Make sure you have assigned a unique name to each form element as well as the form itself. Make sure you have properly followed the installation instructions.
+ - Make sure you have assigned a unique name and matching `ng-model` to each form element 
+ - Make sure you have assigned a unique name to the form itself. 
+ - Make sure you have properly followed the installation instructions.
 
 **Why pass value to custom validator functions?**
 Passing the value to the custom validator function allows the function to be easier to test.

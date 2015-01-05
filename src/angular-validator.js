@@ -11,7 +11,30 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // This is the the scope form model
                 // All validation states are contained here
-                var scopeForm = scope[DOMForm.name];
+                var form_name = DOMForm.attributes['name'].value;
+                var scopeForm = scope[form_name];
+
+
+                scopeForm.reset = function(){
+                    console.log(scopeForm)
+                    console.log(scope)
+                    // Reset the scope model
+                    for (var i = 0; i < DOMForm.length; i++) {
+                        // This ensures we are only watching form fields
+                        if (i in DOMForm) {
+                            if (scopeForm[DOMForm[i].name]){
+                                scopeForm[DOMForm[i].name].$setViewValue("");
+                                scopeForm[DOMForm[i].name].$setModelValue("");
+                                scopeForm[DOMForm[i].name].$dirty = true;
+                            }
+                        }
+                    }
+
+
+                    scopeForm.submitted = false;
+                    scopeForm.$setPristine(true);
+                };
+
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
@@ -58,7 +81,7 @@ angular.module('angularValidator').directive('angularValidator',
                     }
 
                     scope.$watch(function() {
-                            return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]);
+                            return elementToWatch.value + scopeForm.submitted + checkElementValididty(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getValidValue(scopeForm[elementToWatch.name]);
                         },
                         function() {
                             // if dirty show
@@ -74,13 +97,18 @@ angular.module('angularValidator').directive('angularValidator',
                         });
                 }
 
+                // Returns the $valid value of the element if it exists
+                function getValidValue(element) {
+                    if (element && "$valid" in element) {
+                        return element.$valid;
+                    }
+                }
+
 
                 // Returns the $dirty value of the element if it exists
                 function getDirtyValue(element) {
-                    if (element) {
-                        if ("$dirty" in element) {
-                            return element.$dirty;
-                        }
+                    if (element && "$dirty" in element) {
+                        return element.$dirty;
                     }
                 }
 
