@@ -4,16 +4,18 @@ angular.module('angularValidator').directive('angularValidator',
     function() {
         return {
             restrict: 'A',
-            link: function(scope, element, attrs, fn) {
+            link: function(scope, element) {
 
                 // This is the DOM form element
-                var DOMForm = angular.element(element)[0];
+                var DOMForm = angular.element(element)[0],
 
-                // This is the the scope form model
-                // All validation states are contained here
-                var form_name = DOMForm.attributes['name'].value;
-                var scopeForm = scope[form_name];
-
+                    // This is the the scope form model
+                    // All validation states are contained here
+                    form_name = DOMForm.attributes.name.value,
+                    scopeForm = scope[form_name],
+                    errorElementClass = function(name) {
+                        return 'angular-error-' + name;
+                    };
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
@@ -33,7 +35,7 @@ angular.module('angularValidator').directive('angularValidator',
                     }
                 });
 
-                // Setup watches on all form fields 
+                // Setup watches on all form fields
                 setupWatches(DOMForm);
 
 
@@ -68,12 +70,13 @@ angular.module('angularValidator').directive('angularValidator',
                                 updateValidationMessage(elementToWatch);
                                 updateValidationClass(elementToWatch);
                             }
-                            // Update the field immediately if the form is submitted or the element is valid 
+                            // Update the field immediately if the form is submitted or the element is valid
                             else if (scopeForm.submitted || (scopeForm[elementToWatch.name] && scopeForm[elementToWatch.name].$valid)) {
                                 updateValidationMessage(elementToWatch);
                                 updateValidationClass(elementToWatch);
                             }
-                        });
+                        }
+                    );
                 }
 
 
@@ -120,7 +123,7 @@ angular.module('angularValidator').directive('angularValidator',
                     };
 
                     // Make sure the element is a form field and not a button for example
-                    // Only form elements should have names. 
+                    // Only form elements should have names.
                     if (!(element.name in scopeForm)) {
                         return;
                     }
@@ -130,32 +133,47 @@ angular.module('angularValidator').directive('angularValidator',
                     // Only add/remove validation messages if the form field is $dirty or the form has been submitted
                     if (scopeElementModel.$dirty || scope[element.form.name].submitted) {
 
-                        // Remove all validation messages 
-                        var validationMessageElement = isValidationMessagePresent(element);
+                        var errorLabel    = '',
+                            errorElements = getErrorElements(element.name);
+
+                        // Remove all validation messages
+                        var validationMessageElement = isValidationMessagePresent(errorElements);
                         if (validationMessageElement) {
-                            validationMessageElement.remove();
+                            validationMessageElement.html('');
                         }
 
                         if (scopeElementModel.$error.required) {
+
                             // If there is a custom required message display it
                             if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                                errorLabel = generateErrorMessage(element.attributes['required-message'].value);
                             }
                             // Display the default require message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+                                errorLabel = generateErrorMessage(defaultRequiredMessage);
                             }
+
+                            errorElements.html(errorLabel);
+
                         } else if (!scopeElementModel.$valid) {
+
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                errorLabel = generateErrorMessage(element.attributes['invalid-message'].value);
                             }
                             // Display the default error message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                errorLabel = generateErrorMessage(defaultInvalidMessage);
                             }
+
+                            errorElements.html(errorLabel);
                         }
                     }
+                }
+
+
+                function getErrorElements(className) {
+                    return angular.element(DOMForm.getElementsByClassName(errorElementClass(className)));
                 }
 
 
@@ -165,13 +183,11 @@ angular.module('angularValidator').directive('angularValidator',
 
 
                 // Returns the validation message element or False
-                function isValidationMessagePresent(element) {
-                    var elementSiblings = angular.element(element).parent().children();
-                    for (var i = 0; i < elementSiblings.length; i++) {
-                        if (angular.element(elementSiblings[i]).hasClass("validationMessage")) {
-                            return angular.element(elementSiblings[i]);
-                        }
+                function isValidationMessagePresent(errorElements) {
+                    if ( errorElements.length > 0 && errorElements.children().length > 0 ) {
+                        return errorElements;
                     }
+
                     return false;
                 }
 
@@ -180,7 +196,7 @@ angular.module('angularValidator').directive('angularValidator',
                 // depending on the validity of the element and the submitted state of the form
                 function updateValidationClass(element) {
                     // Make sure the element is a form field and not a button for example
-                    // Only form fields should have names. 
+                    // Only form fields should have names.
                     if (!(element.name in scopeForm)) {
                         return;
                     }
@@ -203,7 +219,6 @@ angular.module('angularValidator').directive('angularValidator',
                         }
                     }
                 }
-
             }
         };
     }

@@ -7,9 +7,7 @@
             color:  rgb(255, 128, 0);
         }
     </style>
-
-
-    </head>
+</head>
 
 <body ng-controller="DemoCtrl">
     <div class="container">
@@ -31,6 +29,7 @@
                         invalid-message="'You must enter the word `regex`'"
                         required-message="'Yo! This field is required..'"
                         required></div>
+                <label class="angular-error-dirty control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">On blur validation</label>
@@ -44,6 +43,7 @@
                         invalid-message="'You must enter the word `regex`'"
                         required-message="'Yo! This field is required..'"
                         required></div>
+                <label class="angular-error-blur control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">On submit validation</label>
@@ -56,6 +56,7 @@
                         invalid-message="'You must enter the word `regex`'"
                         required-message="'Yo! This field is required..'"
                         required></div>
+                <label class="angular-error-sub control-label has-error validationMessage"></label>
             </div>
 
             <hr>
@@ -70,6 +71,7 @@
                             ng-model = "form.firstName"
                             validator = "myCustomValidator(form.firstName)"
                             required></div>
+                <label class="angular-error-firstName control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
@@ -81,6 +83,7 @@
                             invalid-message="'Thats not a real email address'"
                             required-message="'Yo this is required'"
                             required></div>
+                <label class="angular-error-emailAddress control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Regex</label>
@@ -93,6 +96,7 @@
                             invalid-message="'You must enter the word `regex`'"
                             required-message="'Yo! This field is required..'"
                             required></div>
+                <label class="angular-error-regex control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Custom message Function</label>
@@ -104,6 +108,7 @@
                             validator = "anotherCustomValidator(form.myField) === true"
                             invalid-message = "anotherCustomValidator(form.myField)"
                             required></div>
+                <label class="angular-error-myField control-label has-error validationMessage"></label>
             </div>
             <hr>
 
@@ -119,6 +124,7 @@
                             validate-on="dirty"
                             invalid-message = "passwordValidator(form.password)"
                             required></div>
+                <label class="angular-error-password control-label has-error validationMessage"></label>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Confirm Password</label>
@@ -131,6 +137,7 @@
                             validate-on="dirty"
                             invalid-message = "'Passwords do not match!'"
                             required></div>
+                <label class="angular-error-confirmPassword control-label has-error validationMessage"></label>
             </div>
             <hr>
             <div class="form-group">

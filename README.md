@@ -1,4 +1,4 @@
-# Angular-Validator 
+# Angular-Validator
 [![Build Status](https://travis-ci.org/turinggroup/angular-validator.png)](https://travis-ci.org/turinggroup/angular-validator)
 
 
@@ -7,7 +7,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 
 
 ## Why?
-Despite Angular's awesomeness, validation in Angular is still a pain in the ass. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
+Despite Angular's awesomeness, validation in Angular is still a pain in the ass. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code.
 
 
 ## Features
@@ -23,11 +23,11 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 
 
 ## Demo
-[Check out the demo!](http://plnkr.co/edit/ceBvMhU5se2mJYWHk3Ne?p=preview)
+[Check out the demo!](http://plnkr.co/edit/LUVffZzFnwErMQaHat7i?p=preview)
 
 
 ## Feedback
-Need a feature, found a bug? Create an issue. Dont have any issues, love the project? Give it a star! 
+Need a feature, found a bug? Create an issue. Dont have any issues, love the project? Give it a star!
 
 ## Installation
 1. Using bower:  `bower install tg-angular-validator`
@@ -42,7 +42,11 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         name = "firstName"
         ng-model = "person.firstName"
         required>
+
+<div class='angular-error-firstName'></div>
 ```
+
+(The error element is left out of subsequent examples for brevity.)
 
 
 **Usage with a custom validator function**
@@ -112,9 +116,16 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         required-message = "myCustomValidationFunction(person.firstName)"
         required>
 ```
-* Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.  
+* Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.
 
 
+**Display errors wherever you want**
+
+Do display the errors, add a class to any element you want to contain the error message for a given field name:
+```
+<div class='angular-error-firstName'></div>
+```
+The above element will display the error for an input with a `name="firstName` attribute.
 
 
 **Setting up the form**
