@@ -33,6 +33,11 @@ angular.module('angularValidator').directive('angularValidator',
                     }
                 });
 
+                // Watch form length to add watches into new form elements
+                scope.$watch(function(){return DOMForm.length;}, function(){
+                    setupWatches(DOMForm);
+                });
+
                 // Setup watches on all form fields 
                 setupWatches(DOMForm);
 
@@ -50,6 +55,12 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // Setup $watch on a single formfield
                 function setupWatch(elementToWatch) {
+
+                    //Prevent to re-watch the element
+                    if (elementToWatch.isWatchedByValidator){
+                        return;
+                    }
+                    elementToWatch.isWatchedByValidator = true;
 
                     // If element is set to validate on blur then update the element on blur
                     if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
