@@ -1,16 +1,7 @@
 {
-  "name": "angular-validator",
-  "version": "1.2.3",
-  "description": "A dead simple, lightweight and flexible validation directive that just works.",
-  "main": "/dist/angular-validator.min.js",
-  "keywords": [
-    "AngularJS", "validation", "angular validation", "form validation", "angular", "validator", "client-side"
-  ],
   "scripts": {
     "test": "grunt test --verbose"
   },
-  "author": "Zohar Jackson",
-  "license": "MIT",
   "devDependencies": {
     "grunt-cli": ">= 0.1.7",
     "grunt-contrib-connect" : "*",

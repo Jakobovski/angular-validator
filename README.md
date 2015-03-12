@@ -14,6 +14,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 * Validate using REGEX, required, or custom validation functions
 * Validates elements on submit with option to validate individual elements on `blur` or `dirty` as well.
 * Prevents submission if the form is invalid
+* Built in reset form method
 * Adds validation error/success messages as sibling elements
 * Adds `.has-error` classes to invalid elements
 * Adds `.has-error` classes to validation message
@@ -23,7 +24,7 @@ Despite Angular's awesomeness, validation in Angular is still a pain in the ass.
 
 
 ## Demo
-[Check out the demo!](http://plnkr.co/edit/ceBvMhU5se2mJYWHk3Ne?p=preview)
+[Check out the demo!](http://plnkr.co/edit/XbDYKrM2QUf8g1ubTHma?p=preview)
 
 
 ## Feedback
@@ -43,7 +44,6 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         ng-model = "person.firstName"
         required>
 ```
-
 
 **Usage with a custom validator function**
 ```
@@ -71,7 +71,6 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         validator = "myCustomValidationFunction(form.firstName)">
 ```
 
-
 **Usage with custom validator literal**
 ```
 <input  type = "text"
@@ -79,7 +78,6 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         ng-model = "person.firstName"
         validator = "form.firstname === 'john'">
 ```
-
 
 **Usage with REGEX and required**
 ```
@@ -101,7 +99,6 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         required>
 ```
 
-
 **Usage with conditional invalid/required message text**
 ```
 <input  type = "text"
@@ -114,9 +111,6 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 ```
 * Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.  
 
-
-
-
 **Setting up the form**
 ```
 <form novalidate angular-validator angular-validator-submit="myFunction(myBeautifulForm)" name="myBeautifulForm">
@@ -128,7 +122,10 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 ```
 Use `angular-validator-submit` to specify the function to be called when the form is submitted. Note that the function is not called if the form is invalid.
 
-
+**Resetting the form**
+```
+myBeautifulForm.reset()
+```
 
 **Validty API**
 Uses standard Angular `$valid` and `$invalid` properties
@@ -140,7 +137,6 @@ myElement.$invalid
 myElement.$angularValidator
 ```
 
-
 ## FAQ
 **It's not working!?**
 Make sure you have assigned a unique name to each form element as well as the form itself. Make sure you have properly followed the installation instructions.
@@ -148,14 +144,11 @@ Make sure you have assigned a unique name to each form element as well as the fo
 **Why pass value to custom validator functions?**
 Passing the value to the custom validator function allows the function to be easier to test.
 
-
 **How do I display success messages/classes?**
 The library does not currently support success classes and messages. Feel free to contribute.
 
-
 **What if I want error messages to display before the user types anything?**
 You are using the wrong library.
-
 
 **What if I want to disable the submit button if the form is invalid?**
 You can add `ng-disabled="myForm.$invalid"` on the submit button.

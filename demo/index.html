@@ -1,8 +1,8 @@
 <html ng-app="angular-validator-demo">
 <head>
     <title>Angular-Validator Demo</title>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
-    <style>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+ <style>
         h4 {
             color:  rgb(255, 128, 0);
         }
@@ -69,6 +69,7 @@
                             class = "form-control"
                             ng-model = "form.firstName"
                             validator = "myCustomValidator(form.firstName)"
+                            validate-on="dirty"
                             required></div>
             </div>
             <div class="form-group">
@@ -80,6 +81,7 @@
                             ng-model = "form.emailAddress"
                             invalid-message="'Thats not a real email address'"
                             required-message="'Yo this is required'"
+                            validate-on="dirty"
                             required></div>
             </div>
             <div class="form-group">
@@ -92,6 +94,7 @@
                             ng-pattern="/regex/"
                             invalid-message="'You must enter the word `regex`'"
                             required-message="'Yo! This field is required..'"
+                            validate-on="dirty"
                             required></div>
             </div>
             <div class="form-group">
@@ -103,6 +106,7 @@
                             ng-model = "form.myField"
                             validator = "anotherCustomValidator(form.myField) === true"
                             invalid-message = "anotherCustomValidator(form.myField)"
+                            validate-on="dirty"
                             required></div>
             </div>
             <hr>
@@ -116,8 +120,8 @@
                             class = "form-control"
                             ng-model = "form.password"
                             validator = "passwordValidator(form.password) === true"
-                            validate-on="dirty"
                             invalid-message = "passwordValidator(form.password)"
+                            validate-on="dirty"
                             required></div>
             </div>
             <div class="form-group">
@@ -135,6 +139,7 @@
             <hr>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" ng-click="myForm.reset()" class="btn btn-primary">Reset</button>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
@@ -146,13 +151,13 @@
         <p>Form valid: {{myForm.$valid}}</p>
         <p>First Name valid: {{myForm.firstName.$valid}}</p>
         <p>Email Valid: {{myForm.emailAddress.$valid}}</p>
+        <p>Password Valid: {{myForm.password.$valid}}  {{form.password}}</p>
         <p>Regex Valid: {{myForm.regex.$valid}}</p>
         <p>Form submitted: {{myForm.submitted}}</p>
 
     </div>
-    <script src="//localhost:35729/livereload.js"></script>
-    <script src="../bower_components/angular/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>    <script src="app.js"></script>
     <script src="app.js"></script>
-    <script src="../src/angular-validator.js"></script>
+    <script src="../dist/angular-validator.js"></script>
 </body>
 </html>

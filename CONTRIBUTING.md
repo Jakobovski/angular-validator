@@ -14,4 +14,5 @@ Thanks for wanting to contribute. Please follow the instructions below.
 1. Make sure you add tests to `/test/angular-validator-spec.js` that test your changes. To run tests `grunt test`
 2. If approriate update the readme to reflect your changes.
 3. Run `grunt build` to minify and create a `dist` version of your changes
-4. If approriate update Update the demo, the plunker and URL to plunker
+4. If approriate update the demo in /demo/
+5. The project maintainer will update the Plunker demo that is linked in README.md if needed.
