@@ -173,7 +173,7 @@ angular.module('angularValidator').directive('angularValidator',
 
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
-                    if (scopeElementModel.$dirty || scope[element.form.name].submitted) {
+                    if (scopeElementModel.$dirty || scope[element.form.name] && scope[element.form.name].submitted) {
 
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
@@ -232,7 +232,7 @@ angular.module('angularValidator').directive('angularValidator',
 
 
                     // Only add/remove validation classes if the field is $dirty or the form has been submitted
-                    if (formField.$dirty || scope[element.form.name].submitted) {
+                    if (formField.$dirty || scope[element.form.name] && scope[element.form.name].submitted) {
                       if (formField.$invalid) {
                             angular.element(element.parentNode).addClass('has-error');
 
