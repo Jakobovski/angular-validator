@@ -98,7 +98,7 @@ angular.module('angularValidator').directive('angularValidator',
                             }
                             else {
                                 // Determine if the element in question is to be updated on blur
-                                isDirtyElement = "validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "dirty";
+                                var isDirtyElement = "validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "dirty";
 
                                 if (isDirtyElement){
                                     updateValidationMessage(elementToWatch);
