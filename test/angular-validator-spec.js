@@ -145,7 +145,7 @@ describe('angularValidator', function () {
         message: function (scopeElementModel, element) {
           var errors = scopeElementModel.$error;
           if (errors.maxlength) {
-            return "'Should not longer than " + element.attributes['ng-maxlength'].value + " characters!'";
+            return "'Should be no longer than " + element.attributes['ng-maxlength'].value + " characters!'";
           } else {
             // default message
             return "'This field is invalid!'";
@@ -181,7 +181,7 @@ describe('angularValidator', function () {
 
         expect(element.hasClass('has-error')).toBe(true);
         expect(scope.myForm.firstName.$invalid).toBe(true);
-        expect(element[0][0].nextSibling.innerHTML === 'Should not longer than 5 characters!').toBe(true);
+        expect(element[0][0].nextSibling.innerHTML === 'Should be no longer than 5 characters!').toBe(true);
       });
 
       it('should not show message from customMessage service', function () {
