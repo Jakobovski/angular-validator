@@ -31,7 +31,7 @@ angular.module('angularValidator').directive('angularValidator',
                         scopeForm.submitted = true;
                     });
 
-                    // If the form is valid then call the function that is declared in the angular-validator-submit atrribute on the form element
+                    // If the form is valid then call the function that is declared in the angular-validator-submit attribute on the form element
                     if (scopeForm.$valid) {
                         scope.$apply(function() {
                             scope.$eval(DOMForm.attributes["angular-validator-submit"].value);
