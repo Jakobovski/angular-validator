@@ -1,3 +1,8 @@
+/*jslint node: true */
+'use strict';
+
+var pkg = require('./package.json');
+
 module.exports = function(grunt) {
 
     // Grunt Config
@@ -20,6 +25,12 @@ module.exports = function(grunt) {
                 "src": "src/*.js",
                 "dest": "dist/angular-validator.js"
             }
+        },
+        ngAnnotate: {
+            main: {
+                src: 'dist/angular-validator.js',
+                dest: 'dist/angular-validator.js'
+            },
         },
         uglify: {
             dist: {
@@ -66,6 +77,8 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-ng-annotate');
+
 
     // Load the plugin that provides the "jshint" task.
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -81,8 +94,8 @@ module.exports = function(grunt) {
 
     // Register Task
     grunt.registerTask('serve', ['connect', 'watch']);
-    grunt.registerTask('build', ['concat', 'uglify', 'karma:build',]);
-    grunt.registerTask('test', ['karma:build',]);
+    grunt.registerTask('build', ['concat', 'ngAnnotate', 'uglify', 'karma:build']);
+    grunt.registerTask('test', ['karma:build', ]);
     grunt.registerTask('test-debug', ['karma:debug']);
     grunt.registerTask('travis', ['karma:travis']);
 };
