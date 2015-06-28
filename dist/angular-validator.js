@@ -140,7 +140,7 @@ angular.module('angularValidator').directive('angularValidator',
                         // Call the custom validator function
                         var isElementValid = scope.$eval(element.attributes.validator.value);
                         scopeForm[element.name].$setValidity("angularValidator", isElementValid);
-                        if( !isElementValid ) scopeForm[element.name].$invalid = !isElementValid;
+                       if( !isElementValid && angular.element(element).context.tagName == 'SELECT' ) scopeForm[element.name].$invalid = !isElementValid;
                         return isElementValid;
                     }
                 }
