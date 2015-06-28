@@ -9,7 +9,6 @@ Thanks for wanting to contribute. Please follow the instructions below.
 4. Run `grunt serve` to start serving the demo on `http://localhost:9001/demo/`
 
 
-
 ## Before creating a pull request
 1. Make sure you add tests to `/test/angular-validator-spec.js` that test your changes. To run tests `grunt test`
 2. If appropriate update the README to reflect your changes.

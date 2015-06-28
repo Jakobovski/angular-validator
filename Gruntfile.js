@@ -79,7 +79,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-ng-annotate');
 
-
     // Load the plugin that provides the "jshint" task.
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
