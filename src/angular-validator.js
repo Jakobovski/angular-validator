@@ -9,6 +9,9 @@ angular.module('angularValidator').directive('angularValidator',
                 // This is the DOM form element
                 var DOMForm = angular.element(element)[0];
 
+                // an array to store all the watches for form elements
+                var watches = [];
+
                 // This is the the scope form model
                 // All validation states are contained here
                 var form_name = DOMForm.attributes['name'].value;
@@ -16,10 +19,12 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
-
                 
                 // Watch form length to add watches for new form elements
-                scope.$watch(function(){return DOMForm.length;}, function(){
+                scope.$watch(function(){return Object.keys(scopeForm).length;}, function(){
+                    // Destroy all the watches
+                    // This is cleaner than figuring out which items are already being watched and only un-watching those.
+                    angular.forEach(watches, function(watch){watch();});
                     setupWatches(DOMForm);
                 });
               
@@ -48,11 +53,9 @@ angular.module('angularValidator').directive('angularValidator',
                             scopeForm[DOMForm[i].name].$render();
                         }
                     }
-
                     scopeForm.submitted = false;
                     scopeForm.$setPristine();
                 };
-
 
 
                 // Setup watches on all form fields 
@@ -72,13 +75,6 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // Setup $watch on a single formfield
                 function setupWatch(elementToWatch) {
-
-                    if (elementToWatch.isWatchedByValidator){
-                        return;
-                    }
-
-                    elementToWatch.isWatchedByValidator = true;
-
                     // If element is set to validate on blur then update the element on blur
                     if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
                         angular.element(elementToWatch).on('blur', function() {
@@ -87,7 +83,7 @@ angular.module('angularValidator').directive('angularValidator',
                         });
                     }
 
-                    scope.$watch(function() {
+                    var watch = scope.$watch(function() {
                             return elementToWatch.value + elementToWatch.required + scopeForm.submitted + checkElementValidity(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getValidValue(scopeForm[elementToWatch.name]);
                         },
                         function() {
@@ -112,6 +108,8 @@ angular.module('angularValidator').directive('angularValidator',
                             }
 
                         });
+
+                    watches.push(watch);
                 }
 
 
