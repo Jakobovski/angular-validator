@@ -171,28 +171,43 @@ angular.module('angularValidator').directive('angularValidator',
 
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
-                    if (scopeElementModel.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
-
+                    if (scopeElementModel.$dirty || scope[element.form.name].submitted) {
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
                             if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                                addErrorMessageAfter(element, generateErrorMessage(element.attributes['required-message'].value));
                             }
                             // Display the default required message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+                                addErrorMessageAfter(element, generateErrorMessage(defaultRequiredMessage));
                             }
                         } else if (!scopeElementModel.$valid) {
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                addErrorMessageAfter(element, generateErrorMessage(element.attributes['invalid-message'].value));
                             }
                             // Display the default error message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                addErrorMessageAfter(element, generateErrorMessage(defaultInvalidMessage));
                             }
                         }
                     }
+                }
+
+                // Adds the error message after the element or a specified element by using the value of the add-message-after-id attribute.
+                function addErrorMessageAfter(element, message)
+                {
+                    var elementToAddAfter;
+                    if ("add-message-after-id" in element.attributes) {
+                        // If add-message-after-id is defined, use the element with this id to add error message after.
+                        elementToAddAfter = angular.element(document.getElementById(element.attributes['add-message-after-id'].value))
+                    }
+                    else {
+                        // Use default element
+                        elementToAddAfter = angular.element(element);
+                    }
+                    // Add the error message after
+                    elementToAddAfter.after(message);
                 }
 
 
@@ -203,7 +218,14 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // Returns the validation message element or False
                 function isValidationMessagePresent(element) {
-                    var elementSiblings = angular.element(element).parent().children();
+                    var elementSiblings;
+                    if ("add-message-after-id" in element.attributes) {
+                        elementSiblings = angular.element(document.getElementById(element.attributes['add-message-after-id'].value)).parent().children();
+                    }
+                    else {
+                        elementSiblings = angular.element(element).parent().children();
+                    }
+
                     for (var i = 0; i < elementSiblings.length; i++) {
                         if (angular.element(elementSiblings[i]).hasClass("validationMessage")) {
                             return angular.element(elementSiblings[i]);
