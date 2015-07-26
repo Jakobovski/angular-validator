@@ -176,25 +176,34 @@ angular.module('angularValidator').directive('angularValidator',
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
                             if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                                setErrorMessage(element, generateErrorMessage(element.attributes['required-message'].value));
                             }
                             // Display the default required message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+                                setErrorMessage(element, generateErrorMessage(defaultRequiredMessage));
                             }
                         } else if (!scopeElementModel.$valid) {
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                setErrorMessage(element, generateErrorMessage(element.attributes['invalid-message'].value));
                             }
                             // Display the default error message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                setErrorMessage(element, generateErrorMessage(defaultInvalidMessage));
                             }
                         }
                     }
                 }
 
+                function setErrorMessage(element, message) {
+                    var angularElement = angular.element(element);
+                    var parentElement = angularElement.parent();
+
+                    if (parentElement.hasClass('input-group'))
+                        parentElement.after(message);
+                    else
+                        angularElement.after(message);
+                }
 
                 function generateErrorMessage(messageText) {
                     return "<label class='control-label has-error validationMessage'>" + scope.$eval(messageText) + "</label>";
@@ -228,17 +237,36 @@ angular.module('angularValidator').directive('angularValidator',
                     angular.element(element).removeClass('has-error');
                     angular.element(element.parentNode).removeClass('has-error');
 
+                    var formGroup = findFormGroup(element);
+                    if (formGroup)
+                        formGroup.removeClass('has-error');
+
 
                     // Only add/remove validation classes if the field is $dirty or the form has been submitted
                     if (formField.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
                       if (formField.$invalid) {
-                            angular.element(element.parentNode).addClass('has-error');
+
+                          if (formGroup)
+                              formGroup.addClass('has-error');
+
+                          angular.element(element.parentNode).addClass('has-error');
 
                             // This is extra for users wishing to implement the .has-error class on the field itself
                             // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
                             angular.element(element).addClass('has-error');
                         }
                     }
+                }
+
+                // Try to find the form-group parent element of the element
+                function findFormGroup(element) {
+                    var angularElement = angular.element(element);
+
+                    if (angularElement.hasClass('form-group')) {
+                        return angularElement;
+                    }
+
+                    return findFormGroup(angularElement.parent());
                 }
 
             }
