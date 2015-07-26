@@ -212,12 +212,30 @@ angular.module('angularValidator').directive('angularValidator',
 
                 // Returns the validation message element or False
                 function isValidationMessagePresent(element) {
-                    var elementSiblings = angular.element(element).parent().children();
+                    var formGroup = findFormGroup(element);
+
+                    if (formGroup)
+                        return elementHasValidationMessageChildren(formGroup);
+
+                    return elementHasValidationMessageChildren(angular.element(element).parent());
+                }
+
+                function elementHasValidationMessageChildren(element) {
+                    var elementSiblings = angular.element(element).children();
+
                     for (var i = 0; i < elementSiblings.length; i++) {
-                        if (angular.element(elementSiblings[i]).hasClass("validationMessage")) {
-                            return angular.element(elementSiblings[i]);
+                        var angularElement = angular.element(elementSiblings[i]);
+
+                        if (angularElement.hasClass("validationMessage")) {
+                            return angular.element(angularElement);
                         }
+
+                        var child = elementHasValidationMessageChildren(angularElement);
+
+                        if (child)
+                            return child;
                     }
+
                     return false;
                 }
 
