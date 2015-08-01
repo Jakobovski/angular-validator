@@ -4,6 +4,7 @@
 
    var scope, compile;
 
+  describe('angularValidator without form invalid message', function () {
    beforeEach(inject(function($rootScope, $compile) {
      scope = $rootScope.$new();
 
@@ -132,5 +133,74 @@
        expect(element[0][1].nextSibling.innerHTML === "WHOA").toBe(true);
      });
    });
-
  });
+
+
+ describe('angularValidator with form invalid message', function () {
+
+   var mockCustomMessage;
+
+   beforeEach(function () {
+     mockCustomMessage = {
+       // scopeElementModel is the object in scope version, element is the object in DOM version
+       message: function (scopeElementModel, element) {
+         var errors = scopeElementModel.$error;
+         if (errors.maxlength) {
+           return "'Should be no longer than " + element.attributes['ng-maxlength'].value + " characters!'";
+         } else {
+           // default message
+           return "'This field is invalid!'";
+         }
+       }
+     };
+
+     module(function ($provide) {
+       $provide.value('customMessage', mockCustomMessage);
+     });
+   });
+
+   beforeEach(inject(function ($rootScope, $compile) {
+     scope = $rootScope.$new();
+
+     htmlForm = angular.element(
+       '<form name="myForm" angular-validator invalid-message="customMessage">' +
+       '<input ng-model="model.firstName" validate-on="dirty" name="firstName" type="text" required ng-maxlength="5"/>' +
+       '<input ng-model="model.lastName" validate-on="dirty" name="lastName" type="text" required ng-maxlength="5" invalid-message="\'The last name is too long!\'"/>' +
+       '</form>'
+     );
+
+     element = $compile(htmlForm)(scope);
+     scope.$digest();
+   }));
+
+
+   describe('form invalid message function', function () {
+
+     it('should show message from customMessage service', function () {
+       scope.myForm.firstName.$setViewValue('Joseph');
+       scope.$digest();
+
+       expect(element.hasClass('has-error')).toBe(true);
+       expect(scope.myForm.firstName.$invalid).toBe(true);
+       expect(element[0][0].nextSibling.innerHTML === 'Should be no longer than 5 characters!').toBe(true);
+     });
+
+     it('should not show message from customMessage service', function () {
+       scope.myForm.firstName.$setViewValue('John');
+       scope.$digest();
+
+       expect(element.hasClass('has-error')).toBe(false);
+       expect(scope.myForm.firstName.$valid).toBe(true);
+     });
+
+     it('field invalid message should have higher priority than form invalid message', function () {
+       scope.myForm.lastName.$setViewValue('Joseph');
+       scope.$digest();
+
+       expect(element[0][1].nextSibling.innerHTML === 'The last name is too long!').toBe(true);
+     });
+
+   });
+ });
+
+});

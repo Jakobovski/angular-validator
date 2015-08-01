@@ -1,7 +1,7 @@
 angular.module('angularValidator', []);
 
-angular.module('angularValidator').directive('angularValidator',
-    function() {
+angular.module('angularValidator').directive('angularValidator', ['$injector',
+    function($injector) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs, fn) {
@@ -61,24 +61,33 @@ angular.module('angularValidator').directive('angularValidator',
                 // Setup watches on all form fields 
                 setupWatches(DOMForm);
 
+                  //check if there is invalid message service for the entire form; if yes, return the injected service; if no, return false;
+                function hasFormInvalidMessage(formElement) {
+                    if (formElement && 'invalid-message' in formElement.attributes) {
+                        return $injector.get(formElement.attributes['invalid-message'].value);
+                    } else {
+                        return false;
+                    }
+                }
 
                 // Iterate through the form fields and setup watches on each one
                 function setupWatches(formElement) {
+                    var formInvalidMessage = hasFormInvalidMessage(formElement);
                     for (var i = 0; i < formElement.length; i++) {
                         // This ensures we are only watching form fields
                         if (i in formElement) {
-                            setupWatch(formElement[i]);
+                            setupWatch(formElement[i], formInvalidMessage);
                         }
                     }
                 }
 
 
                 // Setup $watch on a single formfield
-                function setupWatch(elementToWatch) {
+                function setupWatch(elementToWatch, formInvalidMessage) {
                     // If element is set to validate on blur then update the element on blur
                     if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
                         angular.element(elementToWatch).on('blur', function() {
-                            updateValidationMessage(elementToWatch);
+                            updateValidationMessage(elementToWatch, formInvalidMessage);
                             updateValidationClass(elementToWatch);
                         });
                     }
@@ -89,7 +98,7 @@ angular.module('angularValidator').directive('angularValidator',
                         function() {
                            
                             if (scopeForm.submitted){
-                                updateValidationMessage(elementToWatch);
+                                updateValidationMessage(elementToWatch, formInvalidMessage);
                                 updateValidationClass(elementToWatch);
                             }
                             else {
@@ -97,12 +106,12 @@ angular.module('angularValidator').directive('angularValidator',
                                 var isDirtyElement = "validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "dirty";
 
                                 if (isDirtyElement){
-                                    updateValidationMessage(elementToWatch);
+                                    updateValidationMessage(elementToWatch, formInvalidMessage);
                                     updateValidationClass(elementToWatch);
                                 }
                                 // This will get called in the case of resetting the form. This only gets called for elements that update on blur and submit.
                                 else if (scopeForm[elementToWatch.name] && scopeForm[elementToWatch.name].$pristine){
-                                    updateValidationMessage(elementToWatch);
+                                    updateValidationMessage(elementToWatch, formInvalidMessage);
                                     updateValidationClass(elementToWatch);
                                 }
                             }
@@ -146,7 +155,7 @@ angular.module('angularValidator').directive('angularValidator',
                 // Adds and removes an error message as a sibling element of the form field
                 // depending on the validity of the form field and the submitted state of the form.
                 // Will use default message if a custom message is not given
-                function updateValidationMessage(element) {
+                function updateValidationMessage(element, formInvalidMessage) {
 
                     var defaultRequiredMessage = function() {
                         return "<i class='fa fa-times'></i> Required";
@@ -186,6 +195,10 @@ angular.module('angularValidator').directive('angularValidator',
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
                                 angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                            }
+                            // Display error message provided by custom service
+                            else if (formInvalidMessage) {
+                                angular.element(element).after(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
                             }
                             // Display the default error message
                             else {
@@ -243,5 +256,5 @@ angular.module('angularValidator').directive('angularValidator',
 
             }
         };
-    }
+    }]
 );

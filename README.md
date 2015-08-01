@@ -17,6 +17,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 * Supports multi-field dependent validation (one field depends on another such as password matching)
 * Works with or without `novalidate`
 * Works with Bootstrap out of the box (although Bootstrap is not required)
+* Support form invalid message service where manage invalid messages in one place and save code in HTML
 
 
 ## Why?
@@ -117,6 +118,25 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 </form>
 ```
 Use `angular-validator-submit` to specify the function to be called when the form is submitted. Note that the function is not called if the form is invalid.
+
+**Use form invalid message service**
+```
+<form novalidate angular-validator invalid-message="customMessage" angular-validator-submit="submitMyForm()" name="myForm2" class="form-horizontal">
+            <h4>Form invalid message:</h4>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Max length</label>
+                <div class="col-sm-10">
+                    <input  type="text"
+                            name="firstName"
+                            class="form-control"
+                            validate-on="dirty"
+                            ng-model="form2.firstName"
+                            ng-maxlength="5"
+                            required></div>
+            </div>
+</form>
+```
+Use `invalid-message` on form element to provide the name of the service in which invalid messages are managed. You need to provide a `message` function in your service, which returns the messages you defined. Form invalid message service saves repetitive code in HTML because you do not need to use invalid-message attribute on every field. Please see the demo for examples.
 
 **Resetting the form**
 ```
