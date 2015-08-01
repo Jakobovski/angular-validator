@@ -140,6 +140,43 @@
             </div>
         </form>
 
+
+        <form angular-validator-submit="submitMyForm()" name="myForm2" class="form-horizontal" novalidate angular-validator invalid-message="customMessage">
+            <h4>Form invalid message:</h4>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Max length</label>
+                <div class="col-sm-10">
+                    <input  type="text"
+                            name="firstName"
+                            class="form-control"
+                            validate-on="dirty"
+                            ng-model="form2.firstName"
+                            ng-maxlength="5"
+                            required></div>
+            </div>
+            <hr>
+            <h4>Field invalid message hides form invalid message</h4>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Form vs Field</label>
+                <div class="col-sm-10">
+                    <input  type="text"
+                            name="lastName"
+                            class="form-control"
+                            validate-on="dirty"
+                            ng-model="form2.lastName"
+                            ng-maxlength="6"
+                            invalid-message="'Too long!'"
+                            required></div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" ng-click="myForm2.reset()" class="btn btn-primary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+
         <hr>
         <h4> <u>Scope Sneak Peak</u>
         </h4>
