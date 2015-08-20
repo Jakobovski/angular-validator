@@ -1,7 +1,7 @@
 angular.module('angularValidator', []);
 
-angular.module('angularValidator').directive('angularValidator', ['$injector',
-    function($injector) {
+angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse',
+    function($injector, $parse) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs, fn) {
@@ -15,7 +15,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector',
                 // This is the the scope form model
                 // All validation states are contained here
                 var form_name = DOMForm.attributes['name'].value;
-                var scopeForm = scope[form_name];
+                var scopeForm = $parse(form_name)(scope);
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
