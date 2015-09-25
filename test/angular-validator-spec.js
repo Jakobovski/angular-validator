@@ -4,6 +4,35 @@
 
    var scope, compile;
 
+   describe('angularValidator with dotted name', function () {
+     var htmlForm, element, linkIt;
+
+     beforeEach(inject(function ($rootScope, $compile) {
+       scope = $rootScope.$new();
+       scope.object = {};
+
+       htmlForm = angular.element(
+           '<form name="object.form" angular-validator>' +
+           '<input ng-model="model.firstName" validate-on="dirty" name="firstName" type="text" required/>' +
+           '</form>'
+       );
+
+       linkIt = function () {
+         element = $compile(htmlForm)(scope);
+         scope.$digest();
+       };
+     }));
+
+     it('should not throw an error during linking', function () {
+       expect(linkIt).not.toThrow();
+     });
+
+     it('should correctly parse the dotted form name, evidenced by what\'s on scope', function () {
+       linkIt();
+       expect(scope.object.form).toBeDefined();
+     });
+   });
+   
   describe('angularValidator without form invalid message', function () {
    beforeEach(inject(function($rootScope, $compile) {
      scope = $rootScope.$new();
