@@ -12,7 +12,7 @@
         <h1>Angular-Validator Demo</h1>
         <a href="https://github.com/turinggroup/angular-validator">https://github.com/turinggroup/angular-validator</a>
         <hr>
-        <form angular-validator-submit="submitMyForm()" name="myForm" class="form-horizontal" novalidate angular-validator>
+        <form angular-validator-submit="submitMyForm()" class="form-horizontal" novalidate angular-validator>
             <h4>Choose when to validate:</h4>
             <div class="form-group">
                 <label class="col-sm-2 control-label">On dirty validation</label>
@@ -21,7 +21,7 @@
                         name = "dirty"
                         validate-on="dirty"
                         class = "form-control"
-                        ng-model = "form.dirty"
+                        ng-model = "form.dirtyExample"
                         ng-pattern="/regex/"
                         invalid-message="'You must enter the word `regex`'"
                         required-message="'Yo! This field is required..'"
@@ -34,7 +34,7 @@
                         name = "blur"
                         validate-on="blur"
                         class = "form-control"
-                        ng-model = "form.blur"
+                        ng-model = "form.blurExample"
                         ng-pattern="/regex/"
                         invalid-message="'You must enter the word `regex`'"
                         required-message="'Yo! This field is required..'"
@@ -141,6 +141,8 @@
         </form>
 
 
+        <!-- <hr>
+        <h2>Another example form</h2>
         <form angular-validator-submit="submitMyForm()" name="myForm2" class="form-horizontal" novalidate angular-validator invalid-message="customMessage">
             <h4>Form invalid message:</h4>
             <div class="form-group">
@@ -175,7 +177,7 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
-        </form>
+        </form> -->
 
         <hr>
         <h4> <u>Scope Sneak Peak</u>
@@ -190,6 +192,6 @@
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>    <script src="app.js"></script>
     <script src="app.js"></script>
-    <script src="../dist/angular-validator.js"></script>
+    <script src="../src/angular-validator.js"></script>
 </body>
 </html>
