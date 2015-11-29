@@ -4,14 +4,36 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
     function($injector, $parse, $compile) {
         var link = function(scope, element, attrs, fn) {
 
-            // For this to work properly we need a name on the form. If the user did not add one
-            // Then we will do it for them. Use a timestamp to prevent duplicate form names.
-            // We also need to recompile so that the passed scope is updated with the form.
+            var getRandomInt = function(){
+                return Math.floor((Math.random() * 100000) );
+            };
+
+            // For this directive to work the form needs a name attribute as well as every input element.
+            // This function will add names where missing
+            var need_to_recompile = false;
+
+            // Iterate through all the children of the form element and add a `name` attribute to the ones
+            // that are missing it. 
+            angular.forEach(element.find('input,select,textarea'), function(child_element){
+                child_element = $(child_element);
+                if (!child_element.attr('name')){
+                    child_element.attr('name', getRandomInt());
+                    need_to_recompile = true;
+                }
+            });
+
+            // Uses a ransom to prevent duplicate form names.
             if (!attrs.name) {
-                element.attr('name', 'AV_FORM_' + new Date().getTime());
+                element.attr('name', 'TGAV_FORM_' + getRandomInt());
+                need_to_recompile = true;
+            }
+
+            // We need to recompile so that the passed scope is updated with the new form names.            
+            if (need_to_recompile) {
                 $compile(element)(scope);
                 return;
             }
+
 
             // An array to store all the watches for form elements.
             var watches = [];
@@ -63,8 +85,6 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
             // Clear all the form values. Set everything to pristine.
             scopeForm.reset = function() {
-                debugger;
-
                 angular.forEach(DOMForm, function(formElement) {
                     if (formElement.name) {
                         scopeForm[formElement.name].$setViewValue("");
@@ -268,14 +288,57 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
         return {
             restrict: 'A',
             compile: function(element, attrs) {
-                // Add a name to the form if it is missing one.
-                // if (!attrs.name) {
-                //     element.attr('name', 'AV_FORM_' + new Date().getTime());
-                //     var fn = $compile(element);
-                // }
-             
                 return link;
             }
         };
     }
-]);
+]);;var ruleRegex = /^(.+?)\[(.+)\]$/,
+       numericRegex = /^[0-9]+$/,
+       integerRegex = /^\-?[0-9]+$/,
+       decimalRegex = /^\-?[0-9]*\.?[0-9]+$/,
+       emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+       alphaRegex = /^[a-z]+$/i,
+       alphaNumericRegex = /^[a-z0-9]+$/i,
+       alphaDashRegex = /^[a-z0-9_\-]+$/i,
+       naturalRegex = /^[0-9]+$/i,
+       naturalNoZeroRegex = /^[1-9][0-9]*$/i,
+       ipRegex = /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/i,
+       base64Regex = /[^a-zA-Z0-9\/\+=]/i,
+       numericDashRegex = /^[\d\-\s]+$/,
+       urlRegex = /^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/,
+       dateRegex = /\d{4}-\d{1,2}-\d{1,2}/;
+
+       
+
+var validations = {
+    url: function(input){
+
+    },
+    email: function(input){
+        
+    },
+    emailStrict: function(input){
+
+    },
+    ssn: function(input){
+
+    },
+    phone: function(input){
+        
+    },
+    phoneUSA: function(input){
+        
+    },
+    passwordWeak: function(input){
+        
+    },
+    passwordNormal: function(input){
+        
+    },
+    passwordSecure: function(input){
+        
+    },
+    valid_credit_card: function(input){
+        // see: http://rickharrison.github.io/validate.js/
+    }
+};

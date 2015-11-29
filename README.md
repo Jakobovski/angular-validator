@@ -19,7 +19,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 * Works with or without HTML5 `novalidate`
 * Works with Bootstrap out of the box (although Bootstrap is not required)
 * Support form invalid message service where manage invalid messages in one place and save code in HTML
-
+* Comes with lots of built in validation types.
 
 ## Why?
 Despite Angular's awesomeness, validation in Angular is still a annoying. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with browser and other Javascript code. 
@@ -37,8 +37,7 @@ Love the project? Give it a star! Need a feature, found a bug? Create an issue.
 **Basic usage for required fields**
 ```
 <input  type = 'text'
-        name = 'firstName'
-        ng-model = 'firstName'
+        ng-model = 'firstName' 
         required>
 ```
 
@@ -60,7 +59,6 @@ Love the project? Give it a star! Need a feature, found a bug? Create an issue.
 **Usage with validation on dirty**
 ```
 <input  type = 'text'
-        name = 'firstName'
         ng-model = 'firstName'
         validate-on='dirty'
         validator = 'myCustomValidationFunction(firstName)'>
@@ -76,7 +74,6 @@ Love the project? Give it a star! Need a feature, found a bug? Create an issue.
 **Usage with REGEX and required**
 ```
 <input  type = 'text'
-        name = 'firstName'
         ng-model = 'firstName'
         ng-pattern = '\John\'
         required>
@@ -105,7 +102,7 @@ Love the project? Give it a star! Need a feature, found a bug? Create an issue.
 
 **Setting up the form**
 ```
-<form novalidate angular-validator angular-validator-submit='myFunction(myBeautifulForm)' name='myFormName'>
+<form novalidate angular-validator angular-validator-submit='myFunction(formName)' name='formName'>
     <input>
     <select></select>
     ....
@@ -137,11 +134,11 @@ You need to include a `name` attribute on the form to use this.
 **Validity API**
 Uses standard Angular `$valid` and `$invalid` properties so that it can work with core angular and third party libraries!
 ```
-myForm.$invalid
-myForm.$valid
-myElement.$valid
-myElement.$invalid
-myElement.$angularValidator
+formName.$invalid
+formName.$valid
+elementName.$valid
+elementName.$invalid
+elementName.$angularValidator
 ```
 
 ## FAQ
@@ -155,7 +152,7 @@ The library does not currently support success classes and messages. Feel free t
 This feature is not yet built, feel free to contribute.
 
 **What if I want to disable the submit button if the form is invalid?**
-You can add `ng-disabled='myFormName.$invalid'` on the submit button.
+You can add `ng-disabled='formName.$invalid'` on the submit button.
 
 
 ## CONTRIBUTING

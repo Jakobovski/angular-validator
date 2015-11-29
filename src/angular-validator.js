@@ -4,14 +4,36 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
     function($injector, $parse, $compile) {
         var link = function(scope, element, attrs, fn) {
 
-            // For this to work properly we need a name on the form. If the user did not add one
-            // Then we will do it for them. Use a timestamp to prevent duplicate form names.
-            // We also need to recompile so that the passed scope is updated with the form.
+            var getRandomInt = function(){
+                return Math.floor((Math.random() * 100000) );
+            };
+
+            // For this directive to work the form needs a name attribute as well as every input element.
+            // This function will add names where missing
+            var need_to_recompile = false;
+
+            // Iterate through all the children of the form element and add a `name` attribute to the ones
+            // that are missing it. 
+            angular.forEach(element.find('input,select,textarea'), function(child_element){
+                child_element = $(child_element);
+                if (!child_element.attr('name')){
+                    child_element.attr('name', getRandomInt());
+                    need_to_recompile = true;
+                }
+            });
+
+            // Uses a ransom to prevent duplicate form names.
             if (!attrs.name) {
-                element.attr('name', 'AV_FORM_' + new Date().getTime());
+                element.attr('name', 'TGAV_FORM_' + getRandomInt());
+                need_to_recompile = true;
+            }
+
+            // We need to recompile so that the passed scope is updated with the new form names.            
+            if (need_to_recompile) {
                 $compile(element)(scope);
                 return;
             }
+
 
             // An array to store all the watches for form elements.
             var watches = [];
@@ -63,8 +85,6 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
             // Clear all the form values. Set everything to pristine.
             scopeForm.reset = function() {
-                debugger;
-
                 angular.forEach(DOMForm, function(formElement) {
                     if (formElement.name) {
                         scopeForm[formElement.name].$setViewValue("");
@@ -268,12 +288,6 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
         return {
             restrict: 'A',
             compile: function(element, attrs) {
-                // Add a name to the form if it is missing one.
-                // if (!attrs.name) {
-                //     element.attr('name', 'AV_FORM_' + new Date().getTime());
-                //     var fn = $compile(element);
-                // }
-             
                 return link;
             }
         };
