@@ -8,6 +8,10 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
                 // This is the DOM form element
                 var DOMForm = angular.element(element)[0];
+                // and this is it's name. stored for later re-use.
+                // used to be retrived dynamically (via: element.form.name) but this comes with a negative angular effect:
+                // as soon as there is an input named "name", then angular will return that instead of the main form itself...
+                var main_form_name = angular.element(DOMForm).attr('name');                
 
                 // an array to store all the watches for form elements
                 var watches = [];
@@ -180,7 +184,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
-                    if (scopeElementModel.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
+                    if (scopeElementModel.$dirty || (scope[main_form_name] && scope[main_form_name].submitted)) {
 
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
@@ -243,7 +247,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
                     // Only add/remove validation classes if the field is $dirty or the form has been submitted
-                    if (formField.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
+                    if (formField.$dirty || (scope[main_form_name] && scope[main_form_name].submitted)) {
                       if (formField.$invalid) {
                             angular.element(element.parentNode).addClass('has-error');
 
