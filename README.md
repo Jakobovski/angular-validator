@@ -7,30 +7,25 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 [Check out the demo!](http://plnkr.co/edit/XbDYKrM2QUf8g1ubTHma?p=preview)
 
 ## Features
-* Validate using REGEX, required, or custom validation functions
-* Configure when to validate elements Choose between on form submit, `blur` or `dirty`(change).
+* Validate using regex, HTML5, or custom validation functions.
+* Works seamlessly with all native AngularJS validation directives and native HTML5 validation attributes.
+* Supports custom validation message templates and placement using Angular's native `ngMessages` directive.
+* Choose when to validate elements, on per-element basis. Choose between on form `submission`, `blur` or `dirty`(change).
+* All validation states and validation messages are accessible through `$scope.yourFormName.elementName`. 
 * Prevents submission if the form is invalid
-* Built in reset form method
-* Adds validation error/success messages as sibling elements
-* Adds `.has-error` classes to invalid elements
-* Adds `.has-error` classes to validation message
+* Built in `reset()` form method
 * Supports multi-field dependent validation (one field depends on another such as password matching)
-* Works with or without `novalidate`
 * Works with Bootstrap out of the box (although Bootstrap is not required)
-* Support form invalid message service where manage invalid messages in one place and save code in HTML
-
+* Optionally adds `.has-error` classes to invalid form and message message elements so you don't have too.
+* Supports form invalid message service where manage invalid messages in one place and save code in HTML
 
 ## Why?
-Despite Angular's awesomeness, validation in Angular is still a pain in the ass. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
-
-
-## Feedback
-Need a feature, found a bug? Create an issue. Dont have any issues, love the project? Give it a star! 
+Despite Angular's awesomeness, validation in Angular is still annoying. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
 
 ## Installation
-1. Using bower:  `bower install tg-angular-validator`
-2. Include `angular-validator.min.js` into your application's HTML
-3. Add `angularValidator` as a dependency of your Angular module
+1. Using bower:  `bower install tg-angular-validator`.
+2. Include `angular-validator.min.js`.
+3. Add `angularValidator` as a dependency of your Angular module.
 
 ## Usage
 
@@ -47,7 +42,7 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
-        validator = "myCustomValidationFunction(form.firstName)">
+        validator = "myValidationFunction(person.firstName)">
 ```
 
 **Usage with validation on blur**
@@ -56,7 +51,7 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         name = "firstName"
         ng-model = "person.firstName"
         validate-on="blur"
-        validator = "myCustomValidationFunction(form.firstName)">
+        validator = "myValidationFunction(person.firstName)">
 ```
 
 **Usage with validation on dirty**
@@ -65,7 +60,7 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
         name = "firstName"
         ng-model = "person.firstName"
         validate-on="dirty"
-        validator = "myCustomValidationFunction(form.firstName)">
+        validator = "myValidationFunction(person.firstName)">
 ```
 
 **Usage with custom validator literal**
@@ -73,7 +68,7 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
-        validator = "form.firstname === 'john'">
+        validator = "person.firstname === 'john'">
 ```
 
 **Usage with REGEX and required**
@@ -101,56 +96,50 @@ Need a feature, found a bug? Create an issue. Dont have any issues, love the pro
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
-        validator= "myCustomValidationFunction(person.firstName) === true"
-        invalid-message = "myCustomValidationMe(person.firstName)"
-        required-message = "myCustomValidationFunction(person.firstName)"
+        validator= "myValidationFunction(person.firstName) === true"
+        invalid-message = "myValidationFunction(person.firstName)"
+        required-message = "myValidationFunction(person.firstName)"
         required>
 ```
 * Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.  
 
 **Setting up the form**
 ```
-<form novalidate angular-validator angular-validator-submit="myFunction(myBeautifulForm)" name="myBeautifulForm">
-    <input>
-    <select></select>
+<form novalidate angular-validator angular-validator-submit='myOnSubmitFunction()' name='myFormName'>
     ....
-    <button type="submit">Submit</button>
+    ....
+    <button type='submit'>Submit</button>
 </form>
 ```
 Use `angular-validator-submit` to specify the function to be called when the form is submitted. Note that the function is not called if the form is invalid.
 
+
 **Use form invalid message service**
 ```
-<form novalidate angular-validator invalid-message="customMessage" angular-validator-submit="submitMyForm()" name="myForm2" class="form-horizontal">
-            <h4>Form invalid message:</h4>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Max length</label>
-                <div class="col-sm-10">
-                    <input  type="text"
-                            name="firstName"
-                            class="form-control"
-                            validate-on="dirty"
-                            ng-model="form2.firstName"
-                            ng-maxlength="5"
-                            required></div>
-            </div>
+<form novalidate angular-validator invalid-message='customMessage' angular-validator-submit='submitMyForm()' name='myFormName'>
+        <input  type='text'
+                name='firstName'
+                validate-on='dirty'
+                ng-model='firstName'>
 </form>
 ```
 Use `invalid-message` on form element to provide the name of the service in which invalid messages are managed. You need to provide a `message` function in your service, which returns the messages you defined. Form invalid message service saves repetitive code in HTML because you do not need to use invalid-message attribute on every field. Please see the demo for examples.
 
 **Resetting the form**
 ```
-myBeautifulForm.reset()
+myFormName.reset()
 ```
+*You need to include a `name` attribute on the form to use this.*
 
-**Validty API**
-Uses standard Angular `$valid` and `$invalid` properties
+
+**Validity API**
+Uses standard Angular `$valid` and `$invalid` properties so that it can work with core angular and third party libraries!
 ```
-myForm.$invalid
-myForm.$valid
-myElement.$valid
-myElement.$invalid
-myElement.$angularValidator
+formName.$invalid
+formName.$valid
+elementName.$valid
+elementName.$invalid
+elementName.$angularValidator
 ```
 
 ## FAQ
