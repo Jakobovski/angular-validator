@@ -43,10 +43,10 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // an array to store all the watches for form elements
                 var watches = [];
 
-                // This is the the scope form model
+                // This is the the scope form model, it is created automatically by angular
                 // All validation states are contained here
-                var form_name = DOMForm.attributes['name'].value;
-                var scopeForm = $parse(form_name)(scope);
+                // See: https://docs.angularjs.org/api/ng/directive/form
+                var scopeForm = $parse(attrs.name)(scope);
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
