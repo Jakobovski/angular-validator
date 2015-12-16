@@ -2,18 +2,23 @@
 
 ### Version 2.0
 - add area to display error
-- change the comments to follow convention
+    https://docs.angularjs.org/api/ngMessages/directive/ngMessages
+    - use angularValidator for ngmessages
+    - add config option not to use default messages
+    - add config option not to use default classes
 
+- add `name` back to documentation so that its accessible via scope
+- change the comments to follow convention
 - add validation method for full form, not just based on inputs
-    
-- change src back to dist in demo
+- use this demo as a template: http://huei90.github.io/angular-validation/. use "buy me a star"
+
+
 - are the function in the linking function global?
 - should we split link into controller and link
-- use this demo as a template: http://huei90.github.io/angular-validation/
 - create validation service
 - document the validation service
 - remove compile function
-- add jq
+
 
 # Long term
 - remove jQuery dependency
