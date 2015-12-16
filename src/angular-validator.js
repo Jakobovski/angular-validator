@@ -74,20 +74,19 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     // If the form is valid then call the function that is declared in the angular-validator-submit attribute on the form element
                     if (scopeForm.$valid) {
                         scope.$apply(function() {
-                            scope.$eval(DOMForm.attributes["angular-validator-submit"].value);
+                            scope.$eval(attrs['angular-validator-submit']);
                         });
                     }
                 });
 
-
+                // Clear all the form values. Set everything to pristine.
                 scopeForm.reset = function() {
-                    // Clear all the form values
-                    for (var i = 0; i < DOMForm.length; i++) {
-                        if (DOMForm[i].name) {
-                            scopeForm[DOMForm[i].name].$setViewValue("");
-                            scopeForm[DOMForm[i].name].$render();
+                    angular.forEach(DOMForm, function(formElement) {
+                        if (formElement.name) {
+                            scopeForm[formElement.name].$setViewValue("");
+                            scopeForm[formElement.name].$render();
                         }
-                    }
+                    });
                     scopeForm.submitted = false;
                     scopeForm.$setPristine();
                 };
@@ -96,7 +95,8 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // Setup watches on all form fields 
                 setupWatches(DOMForm);
 
-                //check if there is invalid message service for the entire form; if yes, return the injected service; if no, return false;
+                // Check if there is invalid message service for the entire form; 
+                // if yes, return the injected service; if no, return false;
                 function hasFormInvalidMessage(formElement) {
                     if (formElement && 'invalid-message' in formElement.attributes) {
                         return $injector.get(formElement.attributes['invalid-message'].value);
@@ -117,7 +117,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 }
 
 
-                // Setup $watch on a single formfield
+                // Setup $watch on a single form element
                 function setupWatch(elementToWatch, formInvalidMessage) {
                     // If element is set to validate on blur then update the element on blur
                     if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
@@ -131,7 +131,6 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                             return elementToWatch.value + elementToWatch.required + scopeForm.submitted + checkElementValidity(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getValidValue(scopeForm[elementToWatch.name]);
                         },
                         function() {
-
                             if (scopeForm.submitted) {
                                 updateValidationMessage(elementToWatch, formInvalidMessage);
                                 updateValidationClass(elementToWatch);
@@ -158,19 +157,15 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
                 // Returns the $dirty value of the element if it exists
                 function getDirtyValue(element) {
-                    if (element) {
-                        if ("$dirty" in element) {
-                            return element.$dirty;
-                        }
+                    if (element && "$dirty" in element) {
+                        return element.$dirty;
                     }
                 }
-
-
+                
+                // Returns the $valid value of the element if it exists
                 function getValidValue(element) {
-                    if (element) {
-                        if ("$valid" in element) {
-                            return element.$valid;
-                        }
+                    if (element && "$valid" in element) {
+                        return element.$valid;
                     }
                 }
 
@@ -277,7 +272,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
                     // Only add/remove validation classes if the field is $dirty or the form has been submitted
-                    if (formField.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
+                    if (formField.$dirty || (scopeForm.submitted)) {
                         if (formField.$invalid) {
                             angular.element(element.parentNode).addClass('has-error');
 
