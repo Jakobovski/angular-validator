@@ -209,30 +209,43 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
-                    if (scopeElementModel.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
+                    if (scopeElementModel.$dirty || scopeForm.submitted) {
 
-                        if (scopeElementModel.$error.required) {
-                            // If there is a custom required message display it
-                            if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                        if (!scopeElementModel.$valid) {
+                            // Sweeps errors search by correspondent attribute 'x-message', where 'x' is error name
+                            // This allows custom messages to any validation error.
+                            for (var error in scopeElementModel.$error) {
+                                if (scopeElementModel.$error.hasOwnProperty(error) && scopeElementModel.$error[error]) {
+                                    var messageAttr = error + "-message";
+
+                                    // Display any error message correspondent
+                                    if (messageAttr in element.attributes) {
+                                        angular.element(element).after(generateErrorMessage(element.attributes[messageAttr].value));
+                                        return true;
+                                    }
+                                    // Display default required error message
+                                    else if (messageAttr === "required-message") {
+                                        angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+                                        return true;
+                                    }
+                                    // Display invalid error message
+                                    else if ("invalid-message" in element.attributes) {
+                                        angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                        return true;
+                                    }
+                                    // Display error message provided by custom service
+                                    else if (formInvalidMessage) {
+                                        angular.element(element).after(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
+                                        return true;
+                                    }
+                                    // Display the default error message
+                                    else {
+                                        angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                        return true;
+                                    }
+                                }
                             }
-                            // Display the default required message
-                            else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
-                            }
-                        } else if (!scopeElementModel.$valid) {
-                            // If there is a custom validation message add it
-                            if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
-                            }
-                            // Display error message provided by custom service
-                            else if (formInvalidMessage) {
-                                angular.element(element).after(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
-                            }
-                            // Display the default error message
-                            else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
-                            }
+
                         }
                     }
                 }
