@@ -1,4 +1,6 @@
-# Angular-Validator 
+This is just a fork of https://github.com/turinggroup/angular-validator with Asynchronous Validator, please see demo for example.
+
+# Angular-Validator
 [![Build Status](https://travis-ci.org/turinggroup/angular-validator.png)](https://travis-ci.org/turinggroup/angular-validator)
 
 Angular-Validator is an easy to use, powerful and lightweight AngularJS validation directive.
@@ -11,7 +13,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 * Works seamlessly with all native AngularJS validation directives and native HTML5 validation attributes.
 * Supports custom validation message templates and placement using Angular's native `ngMessages` directive.
 * Choose when to validate elements, on per-element basis. Choose between on form `submission`, `blur` or `dirty`(change).
-* All validation states and validation messages are accessible through `$scope.yourFormName.elementName`. 
+* All validation states and validation messages are accessible through `$scope.yourFormName.elementName`.
 * Prevents submission if the form is invalid
 * Built in `reset()` form method
 * Supports multi-field dependent validation (one field depends on another such as password matching)
@@ -20,7 +22,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 * Supports form invalid message service where manage invalid messages in one place and save code in HTML
 
 ## Why?
-Despite Angular's awesomeness, validation in Angular is still annoying. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code. 
+Despite Angular's awesomeness, validation in Angular is still annoying. Surprisingly there are no seamless, user-friendly, well written Angular validation tools. Unlike other Angular validation tools, Angular-Validator works with out-of-the-box Angular and HTML5 validation, directives and attributes, allowing your forms to work well with the browser and other Javascript code.
 
 ## Installation
 1. Using bower:  `bower install tg-angular-validator`.
