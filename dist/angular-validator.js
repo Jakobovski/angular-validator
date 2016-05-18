@@ -212,6 +212,11 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         validationMessageElement.remove();
                     }
 
+                    function insertErrorMessage(element, message) {
+                        element = angular.element(element).parents('.validationElement').get(0) || element;
+                        angular.element(element).after(message);
+                    }
+
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
                     if (scopeElementModel.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
@@ -219,24 +224,24 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
                             if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                                insertErrorMessage(element, generateErrorMessage(element.attributes['required-message'].value));
                             }
                             // Display the default required message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+                                insertErrorMessage(element, generateErrorMessage(defaultRequiredMessage));
                             }
                         } else if (!scopeElementModel.$valid) {
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                insertErrorMessage(element, generateErrorMessage(element.attributes['invalid-message'].value));
                             }
                             // Display error message provided by custom service
                             else if (formInvalidMessage) {
-                                angular.element(element).after(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
+                                insertErrorMessage(element, generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
                             }
                             // Display the default error message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                insertErrorMessage(element, generateErrorMessage(defaultInvalidMessage));
                             }
                         }
                     }
@@ -250,6 +255,8 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
                 // Returns the validation message element or False
                 function isValidationMessagePresent(element) {
+                    // check if validation-message-container present
+                    element = angular.element(element).parents('.validationElement').get(0) || element;
                     var elementSiblings = angular.element(element).parent().children();
                     for (var i = 0; i < elementSiblings.length; i++) {
                         if (angular.element(elementSiblings[i]).hasClass("validationMessage")) {
@@ -269,6 +276,8 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         return;
                     }
                     var formField = scopeForm[element.name];
+
+                    element = angular.element(element).parents('.validationElement').get(0) || element;
 
                     // This is extra for users wishing to implement the .has-error class on the field itself
                     // instead of on the parent element. Note that Bootstrap requires the .has-error class to be on the parent element
