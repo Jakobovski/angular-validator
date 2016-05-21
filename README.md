@@ -82,6 +82,20 @@ Despite Angular's awesomeness, validation in Angular is still annoying. Surprisi
         required>
 ```
 
+**Usage with asynchronous validator**
+
+```
+<input  type = "text"
+        name = "firstName"
+        ng-model = "person.email"
+        validator-async = "checkUserEmail(person.email)"
+        invalid-message = "'Email already existed'"
+        required-message = "'Email is required'"
+        required>
+```
+
+* validator-async requires the callback function to return promise to make it work. see [angular's ngModel.$asyncValidators](https://docs.angularjs.org/api/ng/type/ngModel.NgModelController) for how to use it.
+
 **Usage with custom error message text**
 ```
 <input  type = "text"
