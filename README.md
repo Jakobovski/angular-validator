@@ -85,8 +85,8 @@ Despite Angular's awesomeness, validation in Angular is still annoying. Surprisi
 **Usage with asynchronous validator**
 
 ```
-<input  type = "text"
-        name = "firstName"
+<input  type = "email"
+        name = "email"
         ng-model = "person.email"
         validator-async = "checkUserEmail(person.email)"
         invalid-message = "'Email already existed'"
