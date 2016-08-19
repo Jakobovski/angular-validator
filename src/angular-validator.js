@@ -82,7 +82,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // Clear all the form values. Set everything to pristine.
                 scopeForm.reset = function() {
                     angular.forEach(DOMForm, function(formElement) {
-                        if (formElement.name) {
+                        if (formElement.name && scopeForm[formElement.name]) {
                             scopeForm[formElement.name].$setViewValue("");
                             scopeForm[formElement.name].$render();
                         }
