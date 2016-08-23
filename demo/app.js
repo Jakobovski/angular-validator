@@ -1,7 +1,7 @@
 angular.module('angular-validator-demo', ['angularValidator']);
 
 
-angular.module('angular-validator-demo').controller('DemoCtrl', function($scope) {
+angular.module('angular-validator-demo').controller('DemoCtrl', function($scope, $http) {
 
 	$scope.submitMyForm = function() {
 		alert("Form submitted");
@@ -18,6 +18,14 @@ angular.module('angular-validator-demo').controller('DemoCtrl', function($scope)
 			return true;
 		} else return "type in 'rainbow'";
 	};
+
+
+    $scope.userAsyncValidator = function(modelValue, viewValue) {
+        var endpoint = 'service/' + encodeURIComponent(modelValue) + '.json';
+
+        // assuming all 200 response is valid, and 404 is invalid
+        return $http.get(endpoint);
+    }
 
 
 	$scope.passwordValidator = function(password) {

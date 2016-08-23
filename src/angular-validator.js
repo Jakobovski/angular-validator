@@ -14,7 +14,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 var need_to_recompile = false;
 
                 // Iterate through all the children of the form element and add a `name` attribute to the ones
-                // that are missing it. 
+                // that are missing it.
                 angular.forEach(element.find('input,select,textarea'), function(child_element) {
                     child_element = $(child_element);
                     if (!child_element.attr('name')) {
@@ -31,7 +31,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     need_to_recompile = true;
                 }
 
-                // We need to recompile so that the passed scope is updated with the new form names.            
+                // We need to recompile so that the passed scope is updated with the new form names.
                 if (need_to_recompile) {
                     $compile(element)(scope);
                     return;
@@ -74,7 +74,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     // If the form is valid then call the function that is declared in the angular-validator-submit attribute on the form element
                     if (scopeForm.$valid) {
                         scope.$apply(function() {
-                            scope.$eval(attrs['angular-validator-submit']);
+                            scope.$eval(attrs.angularValidatorSubmit);
                         });
                     }
                 });
@@ -92,10 +92,10 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 };
 
 
-                // Setup watches on all form fields 
+                // Setup watches on all form fields
                 setupWatches(DOMForm);
 
-                // Check if there is invalid message service for the entire form; 
+                // Check if there is invalid message service for the entire form;
                 // if yes, return the injected service; if no, return false;
                 function hasFormInvalidMessage(formElement) {
                     if (formElement && 'invalid-message' in formElement.attributes) {
@@ -125,6 +125,11 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                             updateValidationMessage(elementToWatch, formInvalidMessage);
                             updateValidationClass(elementToWatch);
                         });
+                    }
+
+                    // setup async validator using angular's $asyncValidators (need angular v1.3+)
+                    if ('validator-async' in elementToWatch.attributes && typeof scopeForm[elementToWatch.name].$asyncValidators.callback !== 'function') {
+                        scopeForm[elementToWatch.name].$asyncValidators.callback = scope.$eval(elementToWatch.attributes['validator-async'].value)
                     }
 
                     var watch = scope.$watch(function() {
@@ -161,7 +166,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         return element.$dirty;
                     }
                 }
-                
+
                 // Returns the $valid value of the element if it exists
                 function getValidValue(element) {
                     if (element && "$valid" in element) {
@@ -194,14 +199,14 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     };
 
                     // Make sure the element is a form field and not a button for example
-                    // Only form elements should have names. 
+                    // Only form elements should have names.
                     if (!(element.name in scopeForm)) {
                         return;
                     }
 
                     var scopeElementModel = scopeForm[element.name];
 
-                    // Remove all validation messages 
+                    // Remove all validation messages
                     var validationMessageElement = isValidationMessagePresent(element);
                     if (validationMessageElement) {
                         validationMessageElement.remove();
@@ -259,7 +264,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // depending on the validity of the element and the submitted state of the form
                 function updateValidationClass(element) {
                     // Make sure the element is a form field and not a button for example
-                    // Only form fields should have names. 
+                    // Only form fields should have names.
                     if (!(element.name in scopeForm)) {
                         return;
                     }
