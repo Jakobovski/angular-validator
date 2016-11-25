@@ -1,41 +1,10 @@
 angular.module('angularValidator', []);
 
 angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse',
-    function($injector, $parse, $compile) {
+    function($injector, $parse) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs, fn) {
-                var getRandomInt = function() {
-                    return Math.floor((Math.random() * 100000));
-                };
-
-                // For this directive to work the form needs a name attribute as well as every input element.
-                // This function will add names where missing
-                var need_to_recompile = false;
-
-                // Iterate through all the children of the form element and add a `name` attribute to the ones
-                // that are missing it. 
-                angular.forEach(element.find('input,select,textarea'), function(child_element) {
-                    child_element = $(child_element);
-                    if (!child_element.attr('name')) {
-                        child_element.attr('name', getRandomInt());
-                        console.log('WARNING! AngularValidator -> One of your form elements(<input>, <textarea>, <select>) is missing a name. We got your back and added a name, but if you want a pretty one you should add it yourself.');
-                        need_to_recompile = true;
-                    }
-                });
-
-                // Uses a ransom to prevent duplicate form names.
-                if (!attrs.name) {
-                    element.attr('name', 'TGAV_FORM_' + getRandomInt());
-                    console.log('WARNING! AngularValidator -> Your form element(<form>) is missing a name. We got your back and added a name, but if you want a pretty one you should add it yourself.');
-                    need_to_recompile = true;
-                }
-
-                // We need to recompile so that the passed scope is updated with the new form names.            
-                if (need_to_recompile) {
-                    $compile(element)(scope);
-                    return;
-                }
 
                 // This is the DOM form element
                 var DOMForm = angular.element(element)[0];
@@ -43,26 +12,25 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // an array to store all the watches for form elements
                 var watches = [];
 
-                // This is the the scope form model, it is created automatically by angular
+				// add $compile to allow for error msgs with angular attributes in
+				var $compile = $injector.get('$compile');
+
+                // This is the the scope form model
                 // All validation states are contained here
-                // See: https://docs.angularjs.org/api/ng/directive/form
-                var scopeForm = $parse(attrs.name)(scope);
+                var form_name = DOMForm.attributes['name'].value;
+                var scopeForm = $parse(form_name)(scope);
 
                 // Set the default submitted state to false
                 scopeForm.submitted = false;
-
+                
                 // Watch form length to add watches for new form elements
-                scope.$watch(function() {
-                    return Object.keys(scopeForm).length;
-                }, function() {
+                scope.$watch(function(){return Object.keys(scopeForm).length;}, function(){
                     // Destroy all the watches
                     // This is cleaner than figuring out which items are already being watched and only un-watching those.
-                    angular.forEach(watches, function(watch) {
-                        watch();
-                    });
+                    angular.forEach(watches, function(watch){watch();});
                     setupWatches(DOMForm);
                 });
-
+              
 
                 // Intercept and handle submit events of the form
                 element.on('submit', function(event) {
@@ -74,19 +42,20 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     // If the form is valid then call the function that is declared in the angular-validator-submit attribute on the form element
                     if (scopeForm.$valid) {
                         scope.$apply(function() {
-                            scope.$eval(attrs['angularValidatorSubmit']);
+                            scope.$eval(DOMForm.attributes["angular-validator-submit"].value);
                         });
                     }
                 });
 
-                // Clear all the form values. Set everything to pristine.
-                scopeForm.reset = function() {
-                    angular.forEach(DOMForm, function(formElement) {
-                        if (formElement.name && scopeForm[formElement.name]) {
-                            scopeForm[formElement.name].$setViewValue("");
-                            scopeForm[formElement.name].$render();
+
+                scopeForm.reset = function(){
+                    // Clear all the form values
+                    for (var i = 0; i < DOMForm.length; i++) {
+                        if (DOMForm[i].name){
+                            scopeForm[DOMForm[i].name].$setViewValue("");
+                            scopeForm[DOMForm[i].name].$render();
                         }
-                    });
+                    }
                     scopeForm.submitted = false;
                     scopeForm.$setPristine();
                 };
@@ -95,8 +64,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 // Setup watches on all form fields 
                 setupWatches(DOMForm);
 
-                // Check if there is invalid message service for the entire form; 
-                // if yes, return the injected service; if no, return false;
+                  //check if there is invalid message service for the entire form; if yes, return the injected service; if no, return false;
                 function hasFormInvalidMessage(formElement) {
                     if (formElement && 'invalid-message' in formElement.attributes) {
                         return $injector.get(formElement.attributes['invalid-message'].value);
@@ -117,7 +85,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                 }
 
 
-                // Setup $watch on a single form element
+                // Setup $watch on a single formfield
                 function setupWatch(elementToWatch, formInvalidMessage) {
                     // If element is set to validate on blur then update the element on blur
                     if ("validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "blur") {
@@ -131,19 +99,21 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                             return elementToWatch.value + elementToWatch.required + scopeForm.submitted + checkElementValidity(elementToWatch) + getDirtyValue(scopeForm[elementToWatch.name]) + getValidValue(scopeForm[elementToWatch.name]);
                         },
                         function() {
-                            if (scopeForm.submitted) {
+                           
+                            if (scopeForm.submitted){
                                 updateValidationMessage(elementToWatch, formInvalidMessage);
                                 updateValidationClass(elementToWatch);
-                            } else {
+                            }
+                            else {
                                 // Determine if the element in question is to be updated on blur
                                 var isDirtyElement = "validate-on" in elementToWatch.attributes && elementToWatch.attributes["validate-on"].value === "dirty";
 
-                                if (isDirtyElement) {
+                                if (isDirtyElement){
                                     updateValidationMessage(elementToWatch, formInvalidMessage);
                                     updateValidationClass(elementToWatch);
                                 }
                                 // This will get called in the case of resetting the form. This only gets called for elements that update on blur and submit.
-                                else if (scopeForm[elementToWatch.name] && scopeForm[elementToWatch.name].$pristine) {
+                                else if (scopeForm[elementToWatch.name] && scopeForm[elementToWatch.name].$pristine){
                                     updateValidationMessage(elementToWatch, formInvalidMessage);
                                     updateValidationClass(elementToWatch);
                                 }
@@ -157,15 +127,19 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
                 // Returns the $dirty value of the element if it exists
                 function getDirtyValue(element) {
-                    if (element && "$dirty" in element) {
-                        return element.$dirty;
+                    if (element) {
+                        if ("$dirty" in element) {
+                            return element.$dirty;
+                        }
                     }
                 }
-                
-                // Returns the $valid value of the element if it exists
+
+
                 function getValidValue(element) {
-                    if (element && "$valid" in element) {
-                        return element.$valid;
+                    if (element) {
+                        if ("$valid" in element) {
+                            return element.$valid;
+                        }
                     }
                 }
 
@@ -207,39 +181,59 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         validationMessageElement.remove();
                     }
 
+                    //console.log('element', element);
+                    //console.log(scopeElementModel);
+
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
-                    if (scopeElementModel.$dirty || scopeForm.submitted) {
+                    if (scopeElementModel.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
 
                         if (scopeElementModel.$error.required) {
                             // If there is a custom required message display it
                             if ("required-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['required-message'].value));
+                                angular.element(element).after(
+                                	$compile(generateErrorMessage(element.attributes['required-message'].value, scopeElementModel))(scope)
+								);
                             }
                             // Display the default required message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultRequiredMessage));
+								angular.element(element).after(
+									$compile(generateErrorMessage(defaultInvalidMessage, scopeElementModel))(scope)
+								);
                             }
                         } else if (!scopeElementModel.$valid) {
                             // If there is a custom validation message add it
                             if ("invalid-message" in element.attributes) {
-                                angular.element(element).after(generateErrorMessage(element.attributes['invalid-message'].value));
+                                angular.element(element).after(
+									$compile(generateErrorMessage(element.attributes['invalid-message'].value, scopeElementModel))(scope)
+								);
                             }
                             // Display error message provided by custom service
                             else if (formInvalidMessage) {
-                                angular.element(element).after(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element)));
+                                angular.element(element).after(
+                                	$compile(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element), scopeElementModel))(scope)
+								);
                             }
                             // Display the default error message
                             else {
-                                angular.element(element).after(generateErrorMessage(defaultInvalidMessage));
+                                angular.element(element).after(
+									$compile(generateErrorMessage(defaultInvalidMessage, scopeElementModel))(scope)
+								);
                             }
                         }
                     }
                 }
 
 
-                function generateErrorMessage(messageText) {
-                    return "<label class='control-label has-error validationMessage'>" + scope.$eval(messageText) + "</label>";
+                function generateErrorMessage(messageText, attrs) {
+                    //return "<label class='control-label has-error validationMessage'>" + scope.$eval(messageText) + "</label>";
+					return '<validation class="control-label has-error validationMessage">'
+						+'<a class="btn btn-tiny btn-validation-error" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'"></a>'
+						+'<div class="sub-tooltip mod-validation-error ng-hide" ng-show="showValid.'+attrs.$name+'" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'">'
+						+'<p>' + scope.$eval(messageText) + '</p>'
+						+'</div>'
+						+'</validation>';
+
                 }
 
 
@@ -272,8 +266,8 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
                     // Only add/remove validation classes if the field is $dirty or the form has been submitted
-                    if (formField.$dirty || scopeForm.submitted) {
-                        if (formField.$invalid) {
+                    if (formField.$dirty || (scope[element.form.name] && scope[element.form.name].submitted)) {
+                      if (formField.$invalid) {
                             angular.element(element.parentNode).addClass('has-error');
 
                             // This is extra for users wishing to implement the .has-error class on the field itself
@@ -285,5 +279,5 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
             }
         };
-    }
-]);
+    }]
+);
