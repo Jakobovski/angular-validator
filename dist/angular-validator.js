@@ -1,7 +1,71 @@
 angular.module('angularValidator', []);
 
-angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse', '$compile',
-	function($injector, $parse, $compile) {
+/*
+* service
+* grabs server side validation
+* determines fields / failures
+* passes to validity api
+* needs to also pass message
+*
+* json output form scope
+* see if we can force validation with validity
+* */
+
+angular.module('angularValidator')
+	.service('angularValidator', [function() {
+		var form = {};
+		var validation = {};
+		var DOMForm;
+
+		var angularValidator = {
+			DOMForm: DOMForm,
+			form: form,
+			setForm: setForm,
+			validation: validation,
+			setValidation: setValidation,
+			parseValidation: parseValidation
+		};
+
+		return angularValidator;
+
+		/////
+
+		function parseValidation() {
+
+			//set whole form to valid again
+			angular.forEach(angularValidator.form, function(formElement) {
+				if (formElement && formElement.$name && angularValidator.form[formElement.$name]) {
+					angularValidator.form[formElement.$name].$setValidity(formElement.$name, true);
+					angularValidator.form[formElement.$name].$render();
+				}
+			});
+
+			// loop validation response from server to set invalid fields
+			if(angularValidator.validation.details && angularValidator.validation.details.length > 0) {
+				for (var i = 0, len = angularValidator.validation.details.length; i < len; i++) {
+					var field = angularValidator.validation.details[i];
+					// only apply to fields actually within the form scope
+					if(angularValidator.form[field.field]) {
+						angularValidator.form[field.field].$setValidity(field.field, false);
+					}
+				}
+			}
+
+			// handle errors not field specific
+		}
+
+		function setValidation(validation) {
+			angularValidator.validation = validation;
+		}
+		function setForm(form) {
+			angularValidator.form = form;
+		}
+
+
+	}]);
+
+angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse', '$compile', 'angularValidator',
+	function($injector, $parse, $compile, angularValidator) {
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs, fn) {
@@ -38,7 +102,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 				}
 
 				// This is the DOM form element
-				var DOMForm = angular.element(element)[0];
+				angularValidator.DOMForm = angular.element(element)[0];
 
 				// an array to store all the watches for form elements
 				var watches = [];
@@ -60,7 +124,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 					angular.forEach(watches, function(watch) {
 						watch();
 					});
-					setupWatches(DOMForm);
+					setupWatches(angularValidator.DOMForm);
 				});
 
 
@@ -71,8 +135,14 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 						scopeForm.submitted = true;
 					});
 
+					angularValidator.setForm(scopeForm);
+					angularValidator.parseValidation();
+
+					// need to check if its been submitted for server side validation / already passed client side validation
+
 					// If the form is valid then call the function that is declared in the angular-validator-submit attribute on the form element
-					if (scopeForm.$valid) {
+					if (scopeForm.$valid || scopeForm.clientValid) {
+						scopeForm.clientValid = true;
 						scope.$apply(function() {
 							scope.$eval(attrs['angularValidatorSubmit']);
 						});
@@ -81,7 +151,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 				// Clear all the form values. Set everything to pristine.
 				scopeForm.reset = function() {
-					angular.forEach(DOMForm, function(formElement) {
+					angular.forEach(angularValidator.DOMForm, function(formElement) {
 						if (formElement.name && scopeForm[formElement.name]) {
 							scopeForm[formElement.name].$setViewValue("");
 							scopeForm[formElement.name].$render();
@@ -93,7 +163,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 
 
 				// Setup watches on all form fields
-				setupWatches(DOMForm);
+				setupWatches(angularValidator.DOMForm);
 
 				// Check if there is invalid message service for the entire form;
 				// if yes, return the injected service; if no, return false;
@@ -207,7 +277,6 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 						validationMessageElement.remove();
 					}
 
-
 					// Only add validation messages if the form field is $dirty or the form has been submitted
 					if (scopeElementModel.$dirty || scopeForm.submitted) {
 
@@ -238,7 +307,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 				}
 
 
-				function generateErrorMessage(messageText) {
+				function generateErrorMessage(messageText, attrs) {
 					return '<validation class="control-label has-error validationMessage">'
 						+'<a class="btn btn-tiny btn-validation-error" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'"></a>'
 						+'<div class="sub-tooltip mod-validation-error ng-hide" ng-show="showValid.'+attrs.$name+'" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'">'
