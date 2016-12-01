@@ -76,7 +76,7 @@ Despite Angular's awesomeness, validation in Angular is still annoying. Surprisi
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
-        ng-pattern = "\regex\"
+        ng-pattern = "/regex/"
         required>
 ```
 
@@ -85,7 +85,7 @@ Despite Angular's awesomeness, validation in Angular is still annoying. Surprisi
 <input  type = "text"
         name = "firstName"
         ng-model = "person.firstName"
-        ng-pattern = "\regex\"
+        ng-pattern = "/regex/"
         invalid-message = "'Please enter the word regex'"
         required-message = "'First name is required'"
         required>
