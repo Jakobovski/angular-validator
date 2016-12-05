@@ -12,7 +12,7 @@ angular.module('angularValidator', []);
 * */
 
 angular.module('angularValidator')
-	.service('angularValidator', ['$compile', function($compile) {
+	.service('angularValidator', ['$compile', 'alertGuy', function($compile, alertGuy) {
 		var scope;
 		var scopeForm;
 		var form = {};
@@ -37,6 +37,8 @@ angular.module('angularValidator')
 
 		function parseValidation() {
 
+			var validationNoField = [];
+
 			//set whole form to valid again
 			angular.forEach(angularValidator.form, function(formElement) {
 				if (formElement && formElement.$name && angularValidator.form[formElement.$name]) {
@@ -44,6 +46,7 @@ angular.module('angularValidator')
 					angularValidator.form[formElement.$name].$render();
 				}
 			});
+			//console.log(angularValidator.validation);
 
 			// loop validation response from server to set invalid fields
 			if(angularValidator.validation.details && angularValidator.validation.details.length > 0) {
@@ -51,7 +54,6 @@ angular.module('angularValidator')
 					var field = angularValidator.validation.details[i];
 					// only apply to fields actually within the form scope
 					if(angularValidator.form[field.field]) {
-						console.log('val ele',angularValidator.DOMForm[field.field]);
 						// set validity to false
 						angularValidator.form[field.field].$setValidity(field.field, false);
 						// set form message
@@ -59,10 +61,26 @@ angular.module('angularValidator')
 							angular.element(angularValidator.DOMForm[field.field]).attr('invalid-message', field.description);
 						}
 					}
+					// handle validation that did not match field on form
+					else {
+						validationNoField.push(field);
+					}
 				}
 			}
 
-			// TODO - handle errors not field specific
+			// handle errors not field specific
+
+			if(validationNoField.length) {
+				var error_desc = '';
+				for (i = 0; i < validationNoField.length; i++) {
+					error_desc += validationNoField[i].description+'.\n\n';
+				}
+				//alertGuy
+				alertGuy.alert({
+					title: angularValidator.validation.description,
+					text: error_desc
+				});
+			}
 		}
 
 		function setValidation(validation) {
