@@ -49,23 +49,27 @@ angular.module('angularValidator')
 			//console.log(angularValidator.validation);
 
 			// loop validation response from server to set invalid fields
-			if(angularValidator.validation.details && angularValidator.validation.details.length > 0) {
-				for (var i = 0, len = angularValidator.validation.details.length; i < len; i++) {
-					var field = angularValidator.validation.details[i];
+			if(angularValidator.validation && Object.keys(angularValidator.validation).length > 0) {
+				angular.forEach(Object.keys(angularValidator.validation), function (key) {
+					var field = angularValidator.validation[key];
 					// only apply to fields actually within the form scope
-					if(angularValidator.form[field.field]) {
+					console.log(angularValidator.form[key]);
+					if(angularValidator.form[key]) {
+
 						// set validity to false
-						angularValidator.form[field.field].$setValidity(field.field, false);
+						angularValidator.form[key].$setValidity(key, false);
 						// set form message
+						console.log(field);
+
 						if(field.description) {
-							angular.element(angularValidator.DOMForm[field.field]).attr('invalid-message', field.description);
+							angular.element(angularValidator.DOMForm[key]).attr('invalid-message', "'" + field.description + "'");
 						}
 					}
 					// handle validation that did not match field on form
 					else {
 						validationNoField.push(field);
 					}
-				}
+				});
 			}
 
 			// handle errors not field specific
@@ -77,7 +81,7 @@ angular.module('angularValidator')
 				}
 				//alertGuy
 				alertGuy.alert({
-					title: angularValidator.validation.description,
+					title: 'There were errors in the data you sent',
 					text: error_desc
 				});
 			}
@@ -101,10 +105,10 @@ angular.module('angularValidator')
 		function updateValidationMessage(element, formInvalidMessage) {
 
 			var defaultRequiredMessage = function() {
-				return "<i class='fa fa-times'></i> Required"; // TODO - make this lang compatible
+				return "'<i class=\"fa fa-times\"></i> Required'"; // TODO - make this lang compatible
 			};
 			var defaultInvalidMessage = function() {
-				return "<i class='fa fa-times'></i> Invalid"; // TODO - make this lang compatible
+				return "'<i class=\"fa fa-times\"></i> Invalid'"; // TODO - make this lang compatible
 			};
 
 			// Make sure the element is a form field and not a button for example
