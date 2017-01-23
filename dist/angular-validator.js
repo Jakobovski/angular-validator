@@ -1,15 +1,15 @@
 angular.module('angularValidator', []);
 
 /*
-* service
-* grabs server side validation
-* determines fields / failures
-* passes to validity api
-* needs to also pass message
-*
-* json output form scope
-* see if we can force validation with validity
-* */
+ * service
+ * grabs server side validation
+ * determines fields / failures
+ * passes to validity api
+ * needs to also pass message
+ *
+ * json output form scope
+ * see if we can force validation with validity
+ * */
 
 angular.module('angularValidator')
 	.service('angularValidator', ['$compile', 'alertGuy', function($compile, alertGuy) {
@@ -127,35 +127,37 @@ angular.module('angularValidator')
 				if (scopeElementModel.$error.required) {
 					// If there is a custom required message display it
 					if ("required-message" in element.attributes) {
-						angular.element(element).after($compile(generateErrorMessage(element.attributes['required-message'].value, scopeElementModel))(angularValidator.scope));
+						angular.element(element).after($compile(generateErrorMessage(element.attributes['required-message'].value, scopeElementModel, angularValidator.scope))(angularValidator.scope));
 					}
 					// Display the default required message
 					else {
-						angular.element(element).after($compile(generateErrorMessage(defaultRequiredMessage(), scopeElementModel))(angularValidator.scope));
+						angular.element(element).after($compile(generateErrorMessage(defaultRequiredMessage(), scopeElementModel, angularValidator.scope))(angularValidator.scope));
 					}
 				} else if (!scopeElementModel.$valid) {
 					// If there is a custom validation message add it
 					if ("invalid-message" in element.attributes) {
-						angular.element(element).after($compile(generateErrorMessage(element.attributes['invalid-message'].value, scopeElementModel))(angularValidator.scope));
+						angular.element(element).after($compile(generateErrorMessage(element.attributes['invalid-message'].value, scopeElementModel, angularValidator.scope))(angularValidator.scope));
 					}
 					// Display error message provided by custom service
 					else if (formInvalidMessage) {
-						angular.element(element).after($compile(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element), scopeElementModel))(angularValidator.scope));
+						angular.element(element).after($compile(generateErrorMessage(formInvalidMessage.message(scopeElementModel, element, angularValidator.scope), scopeElementModel))(angularValidator.scope));
 					}
 					// Display the default error message
 					else {
-						angular.element(element).after($compile(generateErrorMessage(defaultInvalidMessage(), scopeElementModel))(angularValidator.scope));
+						angular.element(element).after($compile(generateErrorMessage(defaultInvalidMessage(), scopeElementModel, angularValidator.scope))(angularValidator.scope));
 					}
 				}
 			}
 		}
 
 
-		function generateErrorMessage(messageText, attrs) {
+		function generateErrorMessage(messageText, attrs, scope) {
+			var finalMsg = scope? scope.$eval(messageText) : messageText;
+
 			return '<validation class="control-label has-error validationMessage">'
 				+'<a class="btn btn-tiny btn-validation-error" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'"></a>'
 				+'<div class="sub-tooltip mod-validation-error ng-hide" ng-show="showValid.'+attrs.$name+'" ng-click="showValid.'+attrs.$name+' = !showValid.'+attrs.$name+'">'
-				+'<p>' + messageText + '</p>'
+				+'<p>' + finalMsg + '</p>'
 				+'</div>'
 				+'</validation>';
 		}
@@ -314,6 +316,7 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
 							return elementToWatch.value + elementToWatch.required + angularValidator.scopeForm.submitted + checkElementValidity(elementToWatch) + getDirtyValue(angularValidator.scopeForm[elementToWatch.name]) + getValidValue(angularValidator.scopeForm[elementToWatch.name]);
 						},
 						function() {
+
 							if (angularValidator.scopeForm.submitted) {
 								angularValidator.updateValidationMessage(elementToWatch, formInvalidMessage);
 								updateValidationClass(elementToWatch);
