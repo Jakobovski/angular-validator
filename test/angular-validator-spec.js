@@ -232,4 +232,47 @@
    });
  });
 
+
+ describe('form with attribute "angular-validator-quiet"', function(){
+   beforeEach(inject(function ($rootScope, $compile) {
+     scope = $rootScope.$new();
+
+     htmlForm = angular.element(
+       '<form name="myForm" angular-validator angular-validator-quiet>' +
+       '<input ng-model="model.firstName" validate-on="dirty" name="firstName" type="text" required ng-maxlength="5"/>' +
+       '</form>'
+     );
+
+     element = $compile(htmlForm)(scope);
+     scope.$digest();
+   }));
+
+   it('should not add generated required label', function(){
+       htmlForm.triggerHandler('submit');
+
+       expect(element[0][0].nextSibling).toBeFalsy();
+   });
+ });
+
+ describe('form with attribute "angular-validator-quiet"', function(){
+   beforeEach(inject(function ($rootScope, $compile) {
+     scope = $rootScope.$new();
+
+     htmlForm = angular.element(
+       '<form name="myForm" angular-validator>' +
+       '<input ng-model="model.firstName" validate-on="dirty" name="firstName" type="text" required ng-maxlength="5"/>' +
+       '<input ng-model="model.lastName" validate-on="dirty" name="firstName" type="text" required ng-maxlength="5" angular-validator-quiet/>' +
+       '</form>'
+     );
+
+     element = $compile(htmlForm)(scope);
+     scope.$digest();
+   }));
+
+   it('should not add generated required label', function(){
+     htmlForm.triggerHandler('submit');
+
+     expect(element[0][1].nextSibling).toBeFalsy();
+   });
+ });
 });
