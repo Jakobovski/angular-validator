@@ -207,6 +207,11 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                         validationMessageElement.remove();
                     }
 
+                    // Do not add new generated <label> element if 'angular-validator-quiet' on the <form>
+                    if("angular-validator-quiet" in DOMForm.attributes || "angular-validator-quiet" in element.attributes){
+                        return;
+                    }
+
 
                     // Only add validation messages if the form field is $dirty or the form has been submitted
                     if (scopeElementModel.$dirty || scopeForm.submitted) {

@@ -103,6 +103,19 @@ Despite Angular's awesomeness, validation in Angular is still annoying. Surprisi
 ```
 * Note that the validator and the message function do not need to be the same function. If you choose to make them the same function make sure to return `true` on valid input.  
 
+**Usage without auto-generated error label**
+
+```
+<input  type = "text"
+        name = "firstName"
+        ng-model = "person.firstName"
+        validator= "myValidationFunction(person.firstName) === true"
+        required
+        angular-validator-quiet>
+```
+
+Use `angular-validator-quiet` on an element to prevent the auto-generation of new DOM element `label` after this inputs. You then have complete control over the location and classes used to show the error messages.
+
 **Setting up the form**
 ```
 <form novalidate angular-validator angular-validator-submit='myOnSubmitFunction()' name='myFormName'>
@@ -124,6 +137,14 @@ Use `angular-validator-submit` to specify the function to be called when the for
 </form>
 ```
 Use `invalid-message` on form element to provide the name of the service in which invalid messages are managed. You need to provide a `message` function in your service, which returns the messages you defined. Form invalid message service saves repetitive code in HTML because you do not need to use invalid-message attribute on every field. Please see the demo for examples.
+
+**Usage form without auto-generated error label**
+
+```
+<form novalidate angular-validator angular-validator-submit="submitMyForm()" name="myFormName" angular-validator-quiet>
+```
+
+Use `angular-validator-quiet` on form element to prevent the auto-generation of new DOM element `label` after all of this forms inputs.
 
 **Resetting the form**
 ```

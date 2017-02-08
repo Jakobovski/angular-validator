@@ -1,6 +1,6 @@
 angular.module('angularValidator', []);
 
-angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse',
+angular.module('angularValidator').directive('angularValidator', ['$injector', '$parse', '$compile',
     function($injector, $parse, $compile) {
         return {
             restrict: 'A',
@@ -205,6 +205,11 @@ angular.module('angularValidator').directive('angularValidator', ['$injector', '
                     var validationMessageElement = isValidationMessagePresent(element);
                     if (validationMessageElement) {
                         validationMessageElement.remove();
+                    }
+
+                    // Do not add new generated <label> element if 'angular-validator-quiet' on the <form>
+                    if("angular-validator-quiet" in DOMForm.attributes || "angular-validator-quiet" in element.attributes){
+                        return;
                     }
 
 
