@@ -1,4 +1,4 @@
-angular.module('angular-validator-demo', ['angularValidator']);
+angular.module('angular-validator-demo', ['angularValidator', 'ngMessages']);
 
 
 angular.module('angular-validator-demo').controller('DemoCtrl', function($scope) {
