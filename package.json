@@ -1,8 +1,30 @@
 {
+  "name": "angular-validator",
+  "version": "1.2.10",
+  "description": "Angular-Validator is an easy to use, powerful and lightweight AngularJS validation directive.",
+  "main": "./dist/angular-validator.js",
   "scripts": {
     "test": "grunt test --verbose"
   },
-  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turinggroup/angular-validator.git"
+  },
+  "keywords": [
+    "AngularJS",
+    "validation",
+    "angular validation",
+    "form validation",
+    "angular",
+    "validator",
+    "client-side"
+  ],
+  "author": "Zohar Jackson <zohar@turinggroup.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/turinggroup/angular-validator/issues"
+  },
+  "homepage": "https://github.com/turinggroup/angular-validator#readme",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-browser-sync": "^2.2.0",
