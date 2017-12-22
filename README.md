@@ -16,7 +16,7 @@ Angular-Validator is an easy to use, powerful and lightweight AngularJS validati
 * Built in `reset()` form method
 * Supports multi-field dependent validation (one field depends on another such as password matching)
 * Works with Bootstrap out of the box (although Bootstrap is not required)
-* Optionally adds `.has-error` classes to invalid form and message message elements so you don't have too.
+* Optionally adds `.has-error` classes to invalid form and message message elements so you don't have to.
 * Supports form invalid message service where manage invalid messages in one place and save code in HTML
 
 ## Why?
